@@ -4,11 +4,13 @@ FROM python:3.6
 # arbitrary location choice: you can change the directory
 RUN mkdir -p /opt/services/djangoapp/src
 # copy our project code
-COPY . /opt/services/djangoapp/src
-WORKDIR /opt/services/djangoapp/src
+COPY backend /opt/services/djangoapp/src
 
-# install our two dependencies
+WORKDIR /opt/services/djangoapp/src
+RUN ls
 RUN pip install -r requirements.txt
+# install our two dependencies
+
 
 
 
@@ -16,4 +18,4 @@ RUN pip install -r requirements.txt
 EXPOSE 8000
 
 # define the default command to run when starting the container
-CMD ["gunicorn", "--chdir", "mysite", "--bind", ":8000", "mysite.wsgi:application"]
+CMD ["gunicorn", "--chdir", "mysite", "--bind", ":8000", "mysite.wsgi:application","--reload","True"]

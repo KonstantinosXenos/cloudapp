@@ -1,8 +1,0 @@
-        <li class="navli"><a href="/">ΔΙΟΙΚΗΤΙΚΑ ΜΕΤΡΑ-ΓΡΑΜΜΑΤΕΙΑ</a></li>
-
-        {% if user.is_authenticated %}
-
-             <li class="navli" style="float:right"><a href="/logout">ΑΠΟΣΥΝΔΕΣΗ</a></li>
-        <li class="navli" style="float:right"><a href="/password"> {{user.username|title}}</a></li>
-
-        {% endif %}

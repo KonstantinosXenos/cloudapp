@@ -3,10 +3,10 @@ version: '3'
 services:
 
   djangoapp:
-    image: djangoprod
+    build: .
     restart: 'always'
     volumes:
-      - .:/opt/services/djangoapp/src
+      - ./backend:/opt/services/djangoapp/src
       - static_volume:/opt/services/djangoapp/static  # <-- bind the static volume
       - media_volume:/opt/services/djangoapp/media  # <-- bind the media volume
     networks:
