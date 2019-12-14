@@ -1,0 +1,15 @@
+{% extends 'main/header_navbar.html' %}
+
+{% block content %}
+<div>
+    <div class="container login centered">
+        <form method="POST">
+        {% csrf_token %}
+        {{form.as_p}}
+            <button type="submit">Είσοδος</button>
+        </form>
+
+    </div>
+
+    </div>
+{% endblock %}

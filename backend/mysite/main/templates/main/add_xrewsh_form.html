@@ -1,0 +1,19 @@
+{% extends 'main/header_navbar.html' %}
+{% block content %}
+<div id="formContainer" class="center">
+
+<form method="post" >
+{% csrf_token %}
+    <div class="formContainer center">
+    <table id="addxrewshtable" class="center">
+        <tr><td><h3>ΧΡΕΩΣΗ ΥΠ`ΑΡΙΘ. {{ assignment_id }}</h3></td></tr>
+    {% csrf_token %}
+{{form.as_table}}
+        <input type="hidden" name="next" value="{{ next }}">
+</table>
+        </div>
+<div class="center"><button type="submit" class="button center"&gt;>Αποθήκευση</button></div>
+</form>
+</div>
+
+{% endblock %}

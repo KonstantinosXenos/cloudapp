@@ -1,0 +1,10 @@
+Django
+psycopg2
+gunicorn
+django-environ
+docx-mailmerge
+djangorestframework
+django-debug-toolbar
+pdf2image
+django-cors-headers
+celery

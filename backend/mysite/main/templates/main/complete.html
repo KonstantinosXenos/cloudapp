@@ -1,0 +1,18 @@
+{% extends 'main/header_navbar.html' %}
+
+{% block content %}
+
+{% load static %}
+<div class="wrap">
+    <div class="center " align="center">Θέλετε να προβείτε στην ολοκλήρωση της χρέωσης;</div>
+
+
+    <div id="parent center">
+        <form action="{{ request.path }}" method="post">
+            {% csrf_token %}
+
+<input type="submit" class="center" name="yes" value="ΝΑΙ" />
+<input type="submit" class="center" name="no" value="ΟΧΙ" />
+        </form>
+</div></div>
+{% endblock %}

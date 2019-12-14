@@ -1,0 +1,23 @@
+{% extends 'main/header_navbar.html' %}
+
+{% block content %}
+
+{% load static %}
+<div class="container">
+    <div class="vertical-center" align="center">
+
+
+        <form action="" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+                <input type="hidden" name="next" value="{{ next }}">
+
+    <input type="submit" value="Submit" name="SubmitComment">
+</form>
+
+    </div>
+
+
+
+</div>
+{% endblock %}
