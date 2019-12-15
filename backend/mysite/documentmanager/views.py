@@ -57,7 +57,7 @@ def explorer(request):
 
     serialized_obj = serialize('json', models.Folder.objects.all())
 
-    return render(request, 'documentmanager/explorer.html', {"objects": serialized_obj})
+    return render(request, 'documentmanager/index.html', {"objects": serialized_obj})
 
 
 def view_document(request):
