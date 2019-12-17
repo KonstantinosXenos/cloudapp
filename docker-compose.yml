@@ -6,9 +6,10 @@ services:
     build: .
     restart: 'always'
     volumes:
-      - .:/opt/services/djangoapp/src
+      - ./backend:/opt/services/djangoapp/src
       - static_volume:/opt/services/djangoapp/static  # <-- bind the static volume
       - media_volume:/opt/services/djangoapp/media  # <-- bind the media volume
+      - frontend_volume:/opt/services/djangoapp/frontend
     networks:
       - nginx_network
       - database1_network
@@ -27,6 +28,7 @@ services:
   
       - static_volume:/opt/services/djangoapp/static  # <-- bind the static volume
       - media_volume:/opt/services/djangoapp/media  # <-- bind the media volume
+      - frontend_volume:/opt/services/djangoapp/frontend
     depends_on:
       - djangoapp
     networks:
@@ -50,5 +52,6 @@ networks:
 
 volumes:
   database1_volume:
+  frontend_volume:
   static_volume:  # <-- declare the static volume
   media_volume:  # <-- declare the media volume

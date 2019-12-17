@@ -6,9 +6,12 @@ window.api.defaults.xsrfCookieName = 'csrftoken'
 window.api.defaults.xsrfHeaderName = 'X-CSRFTOKEN'
 
 
+
+function redirect_to_login_page () {
+  console.log('redirecting')
+  return "lol";
+}
 Vue.use(Vuex)
-
-
 export default new Vuex.Store({
 state: {
   folder_data: {},
@@ -48,8 +51,15 @@ mutations: {
     window.api
       .get("/api/folders/"+ folder_id+ "/")
       .then(response => (context.commit('update_folder_data',response.data)))
-      .catch(error => console.log(error));
-    
+      .catch(function (error) {
+        console.log(error);
+        redirect_to_login_page()
+        if (error.response) {
+          console.log(error.response.data);
+          console.log(error.response.status);
+          console.log(error.response.headers);
+        }
+      });
     
   },
   create_folder (context) {

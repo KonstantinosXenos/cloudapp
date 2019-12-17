@@ -10,8 +10,9 @@ COPY backend/requirements.txt /opt/services/djangoapp/src
 WORKDIR /opt/services/djangoapp/src
 RUN pip install -r requirements.txt
 
-COPY backend /opt/services/djangoapp/src
-
+COPY ./backend /opt/services/djangoapp/src
+RUN rm -R /opt/services/djangoapp/frontend; exit 0
+COPY ./dist /opt/services/djangoapp/frontend
 
 
 
@@ -23,6 +24,5 @@ COPY backend /opt/services/djangoapp/src
 EXPOSE 8000
 
 # define the default command to run when starting the container
-# RUN ["chmod", "+x", "/opt/services/djangoapp/src/backend/startup.sh"]
-CMD ["sh","/opt/services/djangoapp/src/startup.sh"]
-# CMD ["gunicorn", "--chdir", "mysite", "--bind", ":8000","mysite.wsgi:application"]
+
+CMD ["sh","startup.sh"]
