@@ -165,7 +165,7 @@ SESSION_COOKIE_AGE = 1209600
 
 INTERNAL_IPS = [
     # ...
-    '127.0.0.1','10.1.96.4'
+    '127.0.0.1'
     # ...
 ]
 DEBUG_TOOLBAR_PANELS = [

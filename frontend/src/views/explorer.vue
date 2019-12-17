@@ -14,9 +14,9 @@
   </div>
 </template>
 <script>
-import toolbar from "./components/toolbar.vue";
-import preview from "./components/preview";
-import iconpanel from "./components/icon_panel";
+import toolbar from "@/components/explorer/components/toolbar.vue";
+import preview from "@/components/explorer/components/preview";
+import iconpanel from "@/components/explorer/components/icon_panel";
 
 export default {
   name: "explorer",

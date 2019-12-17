@@ -3,13 +3,13 @@ version: '3'
 services:
 
   djangoapp:
-    build: .
+    build: ./backend
     restart: 'always'
     volumes:
       - ./backend:/opt/services/djangoapp/src
       - static_volume:/opt/services/djangoapp/static  # <-- bind the static volume
       - media_volume:/opt/services/djangoapp/media  # <-- bind the media volume
-      - frontend_volume:/opt/services/djangoapp/frontend
+
     networks:
       - nginx_network
       - database1_network
@@ -18,17 +18,30 @@ services:
     expose:
       - "8000"
 
+  frontend:
+    build: ./frontend
+    restart: 'always'
+    volumes:
+      - ./frontend:/app
+  
+      
+    networks:
+      - nginx_network
+
+    expose:
+      - "8080"
+
   nginx:
     image: nginx:1.13
     restart: 'always'
     ports:
       - 8003:80
     volumes:
-      - ./config/nginx/conf.d:/etc/nginx/conf.d
+      - ./config/nginx/conf.d-development:/etc/nginx/conf.d
   
       - static_volume:/opt/services/djangoapp/static  # <-- bind the static volume
       - media_volume:/opt/services/djangoapp/media  # <-- bind the media volume
-      - frontend_volume:/opt/services/djangoapp/frontend
+
     depends_on:
       - djangoapp
     networks:
