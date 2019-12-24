@@ -24,7 +24,7 @@ export default {
 name: 'toolbar',
 methods: {
     clicked: function(pk) {
-        this.$store.dispatch("update_folder_data",pk)
+        this.$router.push({ name: 'explorer', params: { id: pk } })
     }
 }
 };

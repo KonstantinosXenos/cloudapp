@@ -1,7 +1,7 @@
 import axios from 'axios'
 import Vue from 'vue'
 import Vuex from 'vuex'
-import router from './router'
+// import router from './router'
 window.api=axios.create({ baseURL: '', withCredentials: true, xsrfCookieName: "X-CSRFTOKEN"})
 window.api.defaults.xsrfCookieName = 'csrftoken'
 window.api.defaults.xsrfHeaderName = 'X-CSRFTOKEN'
@@ -9,7 +9,7 @@ window.api.defaults.xsrfHeaderName = 'X-CSRFTOKEN'
 
 
 function redirect_to_login_page () {
-  // window.location.href = '/authentication/login/';
+  window.location.href = '/authentication/login/';
 
 }
 Vue.use(Vuex)
@@ -48,7 +48,7 @@ mutations: {
 },
   actions: {
   update_folder_data (context,folder_id) {
-    router.push({ name: 'explorer', params: { id: folder_id } })
+    
     window.api
       .get("/api/folders/"+ folder_id+ "/")
       .then(response => (context.commit('update_folder_data',response.data)))

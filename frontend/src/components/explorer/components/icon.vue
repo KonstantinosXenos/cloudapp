@@ -17,7 +17,7 @@ export default {
     props: ['item'],
       computed: {
 is_selected: function () {
-  console.log(this.item)
+
       if (this.$store.getters.get_selected_icons.includes(this.item)) {
         
         return 'selected'}

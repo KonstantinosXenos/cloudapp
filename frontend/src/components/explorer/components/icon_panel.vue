@@ -65,7 +65,7 @@ export default {
       // this.selectedicons
     },
     double_clicked_icon(pk) {
-    this.$store.dispatch('update_folder_data',pk)
+    this.$router.push({ name: 'explorer', params: { id: pk } })
     },
     //menu option functions for panel
     create_new_folder() {

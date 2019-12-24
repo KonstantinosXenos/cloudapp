@@ -25,6 +25,13 @@ export default {
     preview,
     iconpanel
   },
+    watch: {
+    $route(to) {
+      
+      this.$store.dispatch('update_folder_data',to.params.id)
+
+    }},
+
 
   methods: {
     selecteditems(items) {
