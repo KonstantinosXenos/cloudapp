@@ -6,22 +6,25 @@
     
 <div class="rowparent">
     <div id="projecttitle">AZTEC Docs</div>
-    <div id="pathbar">
+    <div id="pathbar" class="toolbar-item">
         <i class="las la-folder fa-rotate-270" style="color: black; margin-right: 1px; "></i>
         <div class="sidetoside" v-for="i in this.$store.getters.folder_path" v-bind:key=i.pk>
             <b>></b>
         <div @click='clicked(i.pk)' class="pathbarfolderbuttons"><b>{{i.title}}</b></div></div>
     </div>
+    <upbutton class="toolbar-button toolbar-item"></upbutton>
    
-   <input type="text" placeholder="Search.." id="searchbar"/>
+   <input class="toolbar-item" type="text" placeholder="Search.." id="searchbar"/>
 </div>
 </div>
     </template>
 
 
 <script>
+import upbutton from "./components/upbutton.vue"
 export default {
 name: 'toolbar',
+components: {upbutton},
 methods: {
     clicked: function(pk) {
         this.$router.push({ name: 'explorer', params: { id: pk } })
@@ -78,11 +81,15 @@ display: flex;
     display: flex;
     align-items: center;
     white-space:nowrap;
+    margin-right: 10px;
 }
-
+.toolbar-item {
+    height: 30px;
+    outline:0;
+}
 #searchbar {
 
-    height: 30px;
+    
     width: 400px;
     background-color: rgb(255, 255, 255);
     border-radius: 10px;
@@ -96,6 +103,16 @@ display: flex;
   white-space:nowrap;
 }
 
+.toolbar-button {
+    background-color: rgb(99, 99, 99);
+    border-color: rgb(77, 77, 77);
+    width: 30px;
+
+    border-radius: 5px;
+}
+.toolbar-button[disabled] {
+background-color: rgb(165, 165, 165);
+}
 
 
 </style>

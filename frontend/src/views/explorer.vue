@@ -14,7 +14,7 @@
   </div>
 </template>
 <script>
-import toolbar from "@/components/explorer/components/toolbar.vue";
+import toolbar from "@/components/explorer/components/toolbar/toolbar.vue";
 import preview from "@/components/explorer/components/preview";
 import iconpanel from "@/components/explorer/components/icon_panel";
 

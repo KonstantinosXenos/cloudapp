@@ -94,6 +94,7 @@ h1 {
     border-bottom: 1px solid #E0E0E0;
     margin: 0;
     padding: 5px 35px;
+    user-select: none;
 }
 
 #right-click-menu li:last-child {
