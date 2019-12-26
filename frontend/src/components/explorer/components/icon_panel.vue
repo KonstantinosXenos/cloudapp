@@ -12,7 +12,7 @@
         @optionclicked="optionClicked($event)"
       ></rightclickmenu>
 
-      <h3 v-if="this.$store.getters.icons.length==0">This folder is empty.</h3>
+      <h3 v-if="empty_folder">This folder is empty.</h3>
       <icon
         v-for="item in this.$store.getters.icons"
         v-bind:key="item.pk"
@@ -36,7 +36,11 @@ export default {
     icon,
     rightclickmenu
   },
-  computed: {},
+  computed: {
+    empty_folder () {
+      return (typeof(this.$store.getters.icons)!== 'undefined' && this.$store.getters.icons.length == 0)
+    }
+  },
   methods: {
     iconSelected(item) {
       this.$store.commit("select_icons",[item]);

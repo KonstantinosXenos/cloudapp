@@ -1,6 +1,9 @@
 <template>
-<button id="toolbarbutton">
-<font-awesome-icon :icon="icon" :style="{ color: 'white' }"/>
+<button id="toolbarbutton" :disabled="is_disabled" @click="click_event">
+<font-awesome-icon :icon="icon" :style="{ color: 'white' }"
+
+
+/>
     <!-- <font-awesome-icon :icon="['fas', 'fa-level-up-alt']" /> -->
 
 </button>
