@@ -27,7 +27,7 @@ export default new Vuex.Store({
       state.folder_data = data
       state.path = data.path.folders
       state.parent_folder = data.parent
-      console.log(data.parent)
+   
     },
     add_created_folder(state, data) {
 
@@ -57,7 +57,6 @@ export default new Vuex.Store({
         .get("/api/folders/" + folder_id + "/")
         .then(response => (context.commit('update_folder_data', response.data)))
         .catch(function (error) {
-          console.log(error);
           redirect_to_login_page()
           if (error.response) {
             console.log(error.response.data);

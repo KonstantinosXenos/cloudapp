@@ -44,7 +44,11 @@ class FileVersion(models.Model):
     uploadtime=models.DateTimeField("Uploaded", auto_now_add=True)
     file= models.ForeignKey(File,  related_name='main_file', on_delete=models.CASCADE ,blank=True, null=True)
     creator = models.ForeignKey(User, related_name='FileVersion_creator',on_delete=models.PROTECT, editable=False)
-
+    # def save(self, *args, **kwargs):
+    #   if self.pk is None and hasattr(self,'link') is False:
+    #     self.link = Link()
+    #     self.link.save()
+    #   super(Lead, self).save(*args, **kwargs)
 
 
 

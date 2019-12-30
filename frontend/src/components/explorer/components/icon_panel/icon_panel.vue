@@ -13,27 +13,27 @@
       ></rightclickmenu>
 
       <h3 v-if="empty_folder">This folder is empty.</h3>
-      <icon
+      <folderIcon
         v-for="item in this.$store.getters.icons"
         v-bind:key="item.pk"
         :item="item"
         ref="icon"
-        @dblclick.native.stop="double_clicked_icon(item.pk)"
+        
         @contextmenu.native.stop="clickedrightbutton($event,item)"
-        @mousedown.native.stop="iconSelected(item)"
-      ></icon>
+        
+      ></folderIcon>
     </div>
   </div>
 </template>
 
 <script>
-import icon from "./icon.vue";
-import rightclickmenu from "./rightclickmenu.vue";
+import folderIcon from "./components/icon/folderIcon.vue";
+import rightclickmenu from "./components/rightclickmenu.vue";
 export default {
   name: "iconpanel",
   props: ["folder_data"],
   components: {
-    icon,
+    folderIcon,
     rightclickmenu
   },
   computed: {
@@ -42,9 +42,7 @@ export default {
     }
   },
   methods: {
-    iconSelected(item) {
-      this.$store.commit("select_icons",[item]);
-    },
+
     unselectAll() {
       this.$store.commit('unselect_all_icons')
     },
@@ -68,9 +66,7 @@ export default {
       this[event](this.selectedicons);
       // this.selectedicons
     },
-    double_clicked_icon(pk) {
-    this.$router.push({ name: 'explorer', params: { id: pk } })
-    },
+    
     //menu option functions for panel
     create_new_folder() {
       this.$store.dispatch("create_folder");

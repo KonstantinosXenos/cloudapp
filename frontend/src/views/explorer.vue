@@ -16,7 +16,7 @@
 <script>
 import toolbar from "@/components/explorer/components/toolbar/toolbar.vue";
 import preview from "@/components/explorer/components/preview";
-import iconpanel from "@/components/explorer/components/icon_panel";
+import iconpanel from "@/components/explorer/components/icon_panel/icon_panel.vue";
 
 export default {
   name: "explorer",
@@ -40,7 +40,7 @@ export default {
   
   },
   mounted() {
-    this.$store.dispatch('update_folder_data',1)
+    this.$store.dispatch('update_folder_data',this.$route.params.id)
     
   },
   data: function() {

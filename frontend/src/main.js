@@ -3,11 +3,11 @@ import App from './App.vue'
 import router from './router'
 
 import { library } from '@fortawesome/fontawesome-svg-core' 
-import { faLevelUpAlt,faCloudUploadAlt } from '@fortawesome/free-solid-svg-icons'
+import { faLevelUpAlt,faCloudUploadAlt,faFolderOpen,faFilePdf } from '@fortawesome/free-solid-svg-icons'
 
 
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-library.add(faLevelUpAlt,faCloudUploadAlt)
+library.add(faLevelUpAlt,faCloudUploadAlt,faFolderOpen,faFilePdf)
 
 
 Vue.component('font-awesome-icon', FontAwesomeIcon)

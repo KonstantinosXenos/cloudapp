@@ -19,7 +19,7 @@ class FolderContentSerializer(serializers.Serializer):
 
 
 class FileContentSerializer(serializers.Serializer):
-    url = serializers.HyperlinkedIdentityField(view_name='documentmanager:folder-detail')
+    url = serializers.HyperlinkedIdentityField(view_name='documentmanager:file-detail')
 
 class FolderPathSerializer(serializers.Serializer):
     folders = serializers.SerializerMethodField()
@@ -46,7 +46,7 @@ class ItemSerializer(serializers.ModelSerializer):
     # user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), default=serializers.CurrentUserDefault())
     class Meta:
         model = models.Item
-        fields = ["creator", "creation_date", "title","pk","modification_user","modification_date","comment","parent"]
+        fields = ["type","creator", "creation_date", "title","pk","modification_user","modification_date","comment","parent"]
 
     def update(self, instance, validated_data):
         """On successful update add modification user"""
@@ -55,6 +55,7 @@ class ItemSerializer(serializers.ModelSerializer):
 
 
 class FolderSerializer(ItemSerializer):
+    type = serializers.ReadOnlyField(default='folder')
     url = serializers.HyperlinkedIdentityField(view_name='documentmanager:folder-detail')
     path = serializers.SerializerMethodField()
     comment = CommentSerializer(many=True, read_only=True)
@@ -73,14 +74,7 @@ class FolderSerializer(ItemSerializer):
 
     def get_path(self, obj):
         return FolderPathSerializer(obj).data
-    def get_content(self, obj):
 
-        folders = FolderContentSerializer(models.Folder.objects.filter(parent=obj.pk).order_by("modification_date"), context=self.context,
-                                            many=True).data
-        files = FileContentSerializer(models.File.objects.filter(parent=obj.pk).order_by("modification_date"), context=self.context,
-                                            many=True).data
-
-        return folders+files
 class FolderSerializerWithContents(FolderSerializer):
     contents = serializers.SerializerMethodField()
     class Meta:
@@ -93,15 +87,10 @@ class FolderSerializerWithContents(FolderSerializer):
                                             many=True).data
 
 
-        return folders
+        files = FileSerializer(models.File.objects.filter(parent=obj.pk).order_by("modification_date"), context=self.context,
+                                            many=True).data
 
-
-class FileSerializer(ItemSerializer):
-    url = serializers.HyperlinkedIdentityField(view_name='documentmanager:file-detail')
-
-    class Meta:
-        model = models.File
-        fields = ItemSerializer.Meta.fields + ["url","current_version"]
+        return folders+files
 
 class FileVersionSerializer(serializers.ModelSerializer):
     folder= serializers.PrimaryKeyRelatedField(write_only=True, allow_null=True,read_only=False, queryset=models.Folder.objects.all())
@@ -118,11 +107,24 @@ class FileVersionSerializer(serializers.ModelSerializer):
             file_instance=models.File(parent=validated_data['folder'],title="fsf",
                            creator=self.context['request'].user,
                            modification_user=self.context['request'].user,
+                           
 
                                          ).save()
             validated_data['file']=file_instance
         validated_data.pop('folder', None)
         instance=super().create(validated_data)
+        file_instance.current_version=instance
         file_instance.save()
         return instance
+        
+class FileSerializer(ItemSerializer):
+    type = serializers.ReadOnlyField(default='file')
+    url = serializers.HyperlinkedIdentityField(view_name='documentmanager:file-detail')
+    current_version=FileVersionSerializer(read_only=True)
+
+    class Meta:
+        model = models.File
+        fields = ItemSerializer.Meta.fields + ["url","current_version"]
+
+
 
