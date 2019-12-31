@@ -104,7 +104,7 @@ class FileVersionSerializer(serializers.ModelSerializer):
         On file upload, If an existing file to attach this file version is not specified create a new file object.
         """
         if not validated_data['file']:
-            file_instance=models.File(parent=validated_data['folder'],title="fsf",
+            file_instance=models.File(parent=validated_data['folder'],title=validated_data['original_filename'],
                            creator=self.context['request'].user,
                            modification_user=self.context['request'].user,
                            
