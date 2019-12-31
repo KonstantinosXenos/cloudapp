@@ -21,8 +21,9 @@ export default {
     fileurl: function() {
       // `this` points to the vm instance
       try {
-        return this.selectedfiles[0].item.fileUrl;
+        return this.$store.getters.get_selected_icons[0].current_version.fileuploaded;
       } catch (err) {
+        console.log(err)
         return false;
       }
     }

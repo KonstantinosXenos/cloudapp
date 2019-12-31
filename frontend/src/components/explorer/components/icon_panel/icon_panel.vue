@@ -13,40 +13,50 @@
       ></rightclickmenu>
 
       <h3 v-if="empty_folder">This folder is empty.</h3>
-      <folderIcon
+
+      <component
         v-for="item in this.$store.getters.icons"
         v-bind:key="item.pk"
         :item="item"
         ref="icon"
-        
+        :is="component_name(item.type)"
         @contextmenu.native.stop="clickedrightbutton($event,item)"
-        
-      ></folderIcon>
+      ></component>
     </div>
   </div>
 </template>
 
 <script>
 import folderIcon from "./components/icon/folderIcon.vue";
+import fileIcon from "./components/icon/fileIcon.vue";
 import rightclickmenu from "./components/rightclickmenu.vue";
 export default {
   name: "iconpanel",
   props: ["folder_data"],
   components: {
     folderIcon,
+    fileIcon,
     rightclickmenu
   },
   computed: {
-    empty_folder () {
-      return (typeof(this.$store.getters.icons)!== 'undefined' && this.$store.getters.icons.length == 0)
+    empty_folder() {
+      return (
+        typeof this.$store.getters.icons !== "undefined" &&
+        this.$store.getters.icons.length == 0
+      );
     }
   },
   methods: {
-
-    unselectAll() {
-      this.$store.commit('unselect_all_icons')
+    component_name(type) {
+      if (type == "folder") {
+        return "folderIcon";
+      } else {
+        return "fileIcon";
+      }
     },
-
+    unselectAll() {
+      this.$store.commit("unselect_all_icons");
+    },
 
     // menu functions
     clickedrightbutton(event, component) {
@@ -55,25 +65,22 @@ export default {
           { name: "New Folder", func: "create_new_folder" }
         ];
       } else {
-        this.menu_options_data =  [
-          { name: "Rename", func: "rename" }
-        ];
+        this.menu_options_data = [{ name: "Rename", func: "rename" }];
       }
       this.$refs.rightclickmenu.openMenu(event);
     },
     optionClicked(event) {
-      
       this[event](this.selectedicons);
       // this.selectedicons
     },
-    
+
     //menu option functions for panel
     create_new_folder() {
       this.$store.dispatch("create_folder");
     },
     rename(item) {
-        console.log('renaming');
-        this.$store.commit("start_renaming",item);
+      console.log("renaming");
+      this.$store.commit("start_renaming", item);
     }
   },
 
@@ -81,7 +88,7 @@ export default {
     return {
       selectedicons: [],
       menu_options_data: ["Delete", "Copy"],
-      renaming : null
+      renaming: null
     };
   }
 };
@@ -110,7 +117,7 @@ export default {
 h3 {
   width: 100%;
   align-content: center;
-   user-select: none;
+  user-select: none;
 }
 </style>
 
