@@ -11,16 +11,21 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os,environ
+from pathlib import Path
 env = environ.Env()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+
+environ.Env.read_env(env_file=str(Path(BASE_DIR).parent / 'config' / 'django' / '.env'))
+
+environ.Env.read_env(env_file=str(Path(BASE_DIR).parent / 'config' / 'db' / '.env'))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'aops**-1)b4v#zs462=y8&_wx7=$w)o4h9^hv(#8ajit0(dp+l'
+SECRET_KEY = env.str('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
@@ -95,11 +100,11 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'django',
-        'USER': 'user',
-        'PASSWORD': 'ga7s5g8as5g8as7',
-        'HOST': 'database1',
-        'PORT': '5432'
+        'NAME': env.str('POSTGRES_DB'),
+        'USER': env.str('POSTGRES_USER'),
+        'PASSWORD': env.str('POSTGRES_PASSWORD'),
+        'HOST': env.str('HOST'),
+        'PORT': env.str('PORT')
     }
 }
 
