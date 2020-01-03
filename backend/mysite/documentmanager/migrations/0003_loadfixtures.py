@@ -7,7 +7,7 @@ def load_fixture(apps, schema_editor):
 
 class Migration(migrations.Migration):
 
-    dependencies = [('documentmanager', '0002_auto_20200101_2029')
+    dependencies = [('documentmanager', '0002_createsuperuser')
     ]
 
     operations = [

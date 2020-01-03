@@ -30,7 +30,7 @@ SECRET_KEY = env.str('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['10.1.96.7']
+ALLOWED_HOSTS = ['*']
 
 LOGIN_URL='authentication/login'
 # Application definition
@@ -188,6 +188,3 @@ DEBUG_TOOLBAR_PANELS = [
     'debug_toolbar.panels.redirects.RedirectsPanel',
     'debug_toolbar.panels.profiling.ProfilingPanel',
 ]
-
-
-from mysite.settings_dev import *

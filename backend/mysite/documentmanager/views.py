@@ -130,7 +130,7 @@ class GetFolderFullPath(generics.RetrieveAPIView):
     queryset = models.Folder.objects.all()
     serializer_class = serializers.FolderPathSerializer
 
-print(models.Folder.objects.all())
+
 # @login_required
 # def serve_protected_document(request, file):
 #     document = get_object_or_404(ProtectedDocument, file="protected/documents/" + file)
