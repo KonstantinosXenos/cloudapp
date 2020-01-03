@@ -17,9 +17,8 @@ env = environ.Env()
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
+#read our .env files
 environ.Env.read_env(env_file=str(Path(BASE_DIR).parent / 'config' / 'django' / '.env'))
-
 environ.Env.read_env(env_file=str(Path(BASE_DIR).parent / 'config' / 'db' / '.env'))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
@@ -28,7 +27,7 @@ environ.Env.read_env(env_file=str(Path(BASE_DIR).parent / 'config' / 'db' / '.en
 SECRET_KEY = env.str('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -188,3 +187,9 @@ DEBUG_TOOLBAR_PANELS = [
     'debug_toolbar.panels.redirects.RedirectsPanel',
     'debug_toolbar.panels.profiling.ProfilingPanel',
 ]
+
+ELASTICSEARCH_DSL = {
+    'default': {
+        'hosts': 'elasticsearch:9200'
+    },
+}

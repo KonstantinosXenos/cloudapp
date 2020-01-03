@@ -2,9 +2,11 @@ Django
 psycopg2-binary
 gunicorn
 django-environ
-docx-mailmerge
 djangorestframework
 django-debug-toolbar
 pdf2image
 django-cors-headers
 celery
+elasticsearch-dsl
+django-elasticsearch-dsl
+django-elasticsearch-dsl-drf
