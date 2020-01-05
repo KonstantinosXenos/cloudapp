@@ -70,7 +70,7 @@ export default {
       this.$refs.rightclickmenu.openMenu(event);
     },
     optionClicked(event) {
-      this[event](this.selectedicons);
+      this[event](this.$store.getters.get_selected_icons[0]);
       // this.selectedicons
     },
 
@@ -79,16 +79,16 @@ export default {
       this.$store.dispatch("create_folder");
     },
     rename(item) {
-      console.log("renaming");
+      console.log(item);
       this.$store.commit("start_renaming", item);
     }
   },
 
   data: function() {
     return {
-      selectedicons: [],
+
       menu_options_data: ["Delete", "Copy"],
-      renaming: null
+      
     };
   }
 };

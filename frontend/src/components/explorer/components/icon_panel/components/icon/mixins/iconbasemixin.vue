@@ -8,10 +8,12 @@
     :class="[{hovered: hover},is_selected]"
   >
     <div class="icon-image absolute-center">
+      <div class="mimetype">{{item.type}}</div>
       <font-awesome-icon :icon="icon" size="5x" />
-
-      <div class="icon-title" v-text="item.title"></div>
     </div>
+    <input v-if="is_getting_renamed" class="icon-title" @mousedown.stop ref="input" v-model="title" />
+    <div v-else class="icon-title" v-text="item.title"></div>
+    <div class="modified">Modified:{{item.modification_date | moment("YYYY-MM-DD") }}</div>
   </div>
 </template>
 
@@ -26,7 +28,27 @@ export default {
       } else {
         return "";
       }
+    },
+    is_getting_renamed: function() {
+      if (this.$store.getters.is_getting_renamed == this.item) {
+        this.$nextTick(function() {
+          this.$refs.input.select();
+        });
+        return true;
+      } else {
+        return false;
+      }
     }
+  },
+  watch: {
+    // whenever question changes, this function will run
+    is_getting_renamed: function(newis_getting_renamed, oldis_getting_renamed) {
+  
+  if (oldis_getting_renamed==true) {
+
+
+  this.$store.dispatch("complete_renaming", {item:this.item, title:this.title});
+    }}
   },
   methods: {
     iconSelected() {
@@ -35,7 +57,8 @@ export default {
   },
   data: function() {
     return {
-      hover: false
+      hover: false,
+      title: this.item.title
     };
   }
 };
@@ -70,5 +93,36 @@ export default {
   border-style: hidden;
   user-select: none;
   width: 100px;
+}
+.icon-image {
+  width: 100%;
+  position: relative;
+}
+.icon-title {
+  width: 100%;
+  text-align: center;
+  font-size: 15px;
+  border: 0;
+  padding: 1px;
+  margin: 3px;
+  word-wrap: break-word;
+}
+
+.modified {
+  font-size: 10px;
+  font-style: italic;
+}
+
+.mimetype {
+  background: brown;
+  color: white;
+  font-size: 8px;
+  position: absolute;
+  top: 17%;
+  left: 0%;
+  z-index: 10;
+  padding: 2px;
+  min-width: 30px;
+  border-radius: 5px;
 }
 </style>

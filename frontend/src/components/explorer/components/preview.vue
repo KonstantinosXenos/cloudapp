@@ -23,7 +23,7 @@ export default {
       try {
         return this.$store.getters.get_selected_icons[0].current_version.fileuploaded;
       } catch (err) {
-        console.log(err)
+    
         return false;
       }
     }

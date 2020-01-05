@@ -32,7 +32,7 @@ export default new Vuex.Store({
     add_created_folder(state, data) {
 
       state.folder_data.contents.push(data)
-
+      state.renaming = data
     },
     start_renaming(state, data) {
 
@@ -42,12 +42,14 @@ export default new Vuex.Store({
     select_icons(state, data) {
 
       state.selected_icons = data
+      state.renaming=null
 
     },
     unselect_all_icons(state) {
 
       state.selected_icons = []
-
+      state.selected_icons
+      state.renaming=null
     },
   },
   actions: {
@@ -65,6 +67,18 @@ export default new Vuex.Store({
           }
         });
 
+    },
+    complete_renaming(context,data) {
+      // temporary change the title to new title until request completes to make transition seamless
+      var old_title=data.item.title
+      data.item.title=data.title
+      window.api.patch(data.item.url , {"title": data.title}).then(response => data.item.title=response.data.title)
+      .catch(function (error) {
+        // on error revert the change
+        data.item.title=old_title
+        console.log(error)
+      });
+      
     },
     go_up() {
       console.log('going up')
@@ -100,5 +114,7 @@ export default new Vuex.Store({
     get_selected_icons: state => {
       return state.selected_icons
     },
-  }
+    is_getting_renamed: state => {
+      return state.renaming
+  }}
 })

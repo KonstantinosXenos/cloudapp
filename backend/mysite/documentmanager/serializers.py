@@ -43,7 +43,7 @@ class FolderPathSerializer(serializers.Serializer):
 
 
 class ItemSerializer(serializers.ModelSerializer):
-    # user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), default=serializers.CurrentUserDefault())
+   
     class Meta:
         model = models.Item
         fields = ["type","creator", "creation_date", "title","pk","modification_user","modification_date","comment","parent"]
@@ -104,7 +104,7 @@ class FileVersionSerializer(serializers.ModelSerializer):
         On file upload, If an existing file to attach this file version is not specified create a new file object.
         """
         if not validated_data['file']:
-            file_instance=models.File(parent=validated_data['folder'],title="SS",
+            file_instance=models.File(parent=validated_data['folder'],title=validated_data['original_filename'],
                            creator=self.context['request'].user,
                            modification_user=self.context['request'].user,
                            

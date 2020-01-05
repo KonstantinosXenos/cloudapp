@@ -81,8 +81,8 @@ class ItemViewSet(rest_framework.viewsets.ModelViewSet):
     def perform_create(self, serializer):
 
         serializer.save(creator=self.request.user,modification_user=self.request.user)
-    def get_serializer_context(self):
-        return {'request': None}
+    # def get_serializer_context(self):
+    #     return {'request': None}
 class FileViewSet(ItemViewSet):
     queryset = models.File.objects.all().order_by("modification_date")
     serializer_class = serializers.FileSerializer

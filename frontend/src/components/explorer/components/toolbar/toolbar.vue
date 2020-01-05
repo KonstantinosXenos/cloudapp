@@ -22,7 +22,7 @@
           ref="file"
           style="display: none"
           v-on:change="handleFileUpload()"
-          multiple
+          accept=".pdf"
         />
       </label>
       <input class="toolbar-item" type="text" placeholder="Search.." id="searchbar" />

@@ -8,6 +8,7 @@ from rest_framework import routers, serializers, viewsets
 app_name = 'documentmanager'  # here for namespacing of urls.
 
 router = routers.DefaultRouter()
+router.register(r'item', views.ItemViewSet, basename='item')
 router.register(r'folders', views.FolderViewSet, basename='folder')
 router.register(r'comments', views.CommentViewSet)
 router.register(r'file', views.FileViewSet, basename='file')

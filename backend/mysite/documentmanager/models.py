@@ -14,7 +14,7 @@ def generate_filename(instance, filename):
 
 class Item(models.Model):
     parent=models.ForeignKey("Folder", related_name='folder_parent', blank=True, null=True, on_delete=models.CASCADE)
-    title = models.CharField(max_length=50, verbose_name="title")
+    title = models.CharField(max_length=255, verbose_name="title")
     creator = models.ForeignKey(User, related_name='creator',on_delete=models.PROTECT, editable=False)
     creation_date=models.DateTimeField("Created", auto_now_add=True)
     modification_user= models.ForeignKey(User,related_name='modification_user', on_delete=models.PROTECT, editable=False)
@@ -40,7 +40,7 @@ class File(Item):
 class FileVersion(models.Model):
     fileuploaded = models.FileField(upload_to=generate_filename, unique=True,
                             validators=[FileExtensionValidator(allowed_extensions=['pdf'])])
-    original_filename = models.CharField(max_length=200, verbose_name="Filename")
+    original_filename = models.CharField(max_length=255, verbose_name="Filename")
     uploadtime=models.DateTimeField("Uploaded", auto_now_add=True)
     file= models.ForeignKey(File,  related_name='main_file', on_delete=models.CASCADE ,blank=True, null=True)
     creator = models.ForeignKey(User, related_name='FileVersion_creator',on_delete=models.PROTECT, editable=False)
