@@ -1,11 +1,15 @@
 
 <template>
   <div id="icon-panel" class="fullheight">
-    <div
+    <drag-select-container
       class="icon-container"
-      @mousedown.self.stop="unselectAll()"
-      @contextmenu.stop="clickedrightbutton($event, 'panel')"
+      @mousedown.native.self.stop="unselectAll()"
+      @contextmenu.native.stop="clickedrightbutton($event, 'panel')"
+      selectorClass="item" 
+      @change="dragselect"
     >
+        <template>
+      <!-- Your items here -->
       <rightclickmenu
         ref="rightclickmenu"
         :menu_options="menu_options_data"
@@ -13,6 +17,8 @@
       ></rightclickmenu>
 
       <h3 v-if="empty_folder">This folder is empty.</h3>
+   
+
 
       <component
         v-for="item in this.$store.getters.icons"
@@ -21,8 +27,12 @@
         ref="icon"
         :is="component_name(item.type)"
         @contextmenu.native.stop="clickedrightbutton($event,item)"
+        class="item"
+     
       ></component>
-    </div>
+          </template>
+  </drag-select-container>
+  
   </div>
 </template>
 
@@ -30,13 +40,15 @@
 import folderIcon from "./components/icon/folderIcon.vue";
 import fileIcon from "./components/icon/fileIcon.vue";
 import rightclickmenu from "./components/rightclickmenu.vue";
+import DragSelect from './components/DragSelect.vue'
 export default {
   name: "iconpanel",
   props: ["folder_data"],
   components: {
     folderIcon,
     fileIcon,
-    rightclickmenu
+    rightclickmenu,
+    'drag-select-container': DragSelect
   },
   computed: {
     empty_folder() {
@@ -53,6 +65,9 @@ export default {
       } else {
         return "fileIcon";
       }
+    },
+    dragselect(items) {
+      return items
     },
     unselectAll() {
       this.$store.commit("unselect_all_icons");
@@ -88,6 +103,7 @@ export default {
     return {
 
       menu_options_data: ["Delete", "Copy"],
+      selectedItems: []
       
     };
   }

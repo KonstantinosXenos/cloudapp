@@ -12,7 +12,14 @@ library.add(faLevelUpAlt,faCloudUploadAlt,faFolderOpen,faFilePdf)
 
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 
+import Meta from 'vue-meta';
+Vue.use(Meta);
+
 Vue.use(require('vue-moment'));
+
+
+
+
 
 Vue.config.productionTip = false
 

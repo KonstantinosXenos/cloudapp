@@ -10,18 +10,25 @@ import store from './store.js'
 export default {
   name: 'app',
   store,
-
+  metaInfo: {
+    title: 'Explorer',
+    titleTemplate: '%s - Cloud',
+    meta: [
+      {'http-equiv': 'Content-Type', content: 'text/html; charset=utf-8'},
+     
+    ],
+  }
 }
 </script>
 <style>
 
 #app {
-  position: relative;
+  position: absolute;
   height: 100vh;
   margin: 0px;
   padding: 0px;
   max-height: 100vh;
-  
+  width:  100%;
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -44,15 +51,15 @@ export default {
 
 html {
   height: 100vh;
-   max-height: 100vh;
+   max-height: 100%;
      margin: 0px;
   padding: 0px;
 }
 body {
    
   height: 100vh;
-  width:  100%;
-   max-height: 100vh;
+  width:  100vh;
+   max-height: 100%;
      margin: 0px;
   padding: 0px;
 }
