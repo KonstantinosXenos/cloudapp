@@ -20,8 +20,5 @@ urlpatterns = [
     url(r'^api/', include(router.urls)),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 
-    path('view/', views.view_document, name="view"),
-    path('', views.explorer, name="explorer"),
-    path('snippets/<int:pk>/', views.GetFolderFullPath.as_view()),
 
 ]

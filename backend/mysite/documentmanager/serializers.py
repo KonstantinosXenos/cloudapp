@@ -43,7 +43,7 @@ class FolderPathSerializer(serializers.Serializer):
 
 
 class ItemSerializer(serializers.ModelSerializer):
-   
+    parent=serializers.PrimaryKeyRelatedField(queryset=models.Folder.objects.all(),allow_null=False)
     class Meta:
         model = models.Item
         fields = ["type","creator", "creation_date", "title","pk","modification_user","modification_date","comment","parent"]

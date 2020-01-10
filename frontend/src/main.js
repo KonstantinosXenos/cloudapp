@@ -2,12 +2,12 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 
-import { library } from '@fortawesome/fontawesome-svg-core' 
-import { faLevelUpAlt,faCloudUploadAlt,faFolderOpen,faFilePdf } from '@fortawesome/free-solid-svg-icons'
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faLevelUpAlt, faCloudUploadAlt, faFolderOpen, faFilePdf } from '@fortawesome/free-solid-svg-icons'
 
 
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-library.add(faLevelUpAlt,faCloudUploadAlt,faFolderOpen,faFilePdf)
+library.add(faLevelUpAlt, faCloudUploadAlt, faFolderOpen, faFilePdf)
 
 
 Vue.component('font-awesome-icon', FontAwesomeIcon)
@@ -16,9 +16,11 @@ import Meta from 'vue-meta';
 Vue.use(Meta);
 
 Vue.use(require('vue-moment'));
+import { debounce } from 'vue-debounce'
+Vue.use(debounce)
+import vueDebounce from 'vue-debounce'
 
-
-
+Vue.use(vueDebounce)
 
 
 Vue.config.productionTip = false

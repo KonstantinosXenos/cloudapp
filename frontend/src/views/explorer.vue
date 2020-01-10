@@ -77,8 +77,9 @@ export default {
 
 
 #explorer {
-  max-height: 100%;
-  height: 100%;
+  max-height: 100vh;
+  height: 100vh;
+  
 }
 .fa-rotate-270 {
   -webkit-transform: rotate(270deg);
@@ -87,4 +88,5 @@ export default {
   -o-transform: rotate(270deg);
   transform: rotate(270deg);
 }
+
 </style>

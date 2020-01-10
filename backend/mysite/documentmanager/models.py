@@ -13,7 +13,7 @@ def generate_filename(instance, filename):
 
 
 class Item(models.Model):
-    parent=models.ForeignKey("Folder", related_name='folder_parent', blank=True, null=True, on_delete=models.CASCADE)
+    parent=models.ForeignKey("Folder", related_name='folder_parent', blank=False, null=True, on_delete=models.CASCADE)
     title = models.CharField(max_length=255, verbose_name="title")
     creator = models.ForeignKey(User, related_name='creator',on_delete=models.PROTECT, editable=False)
     creation_date=models.DateTimeField("Created", auto_now_add=True)

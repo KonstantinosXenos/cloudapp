@@ -27,7 +27,7 @@ export default new Vuex.Store({
       state.folder_data = data
       state.path = data.path.folders
       state.parent_folder = data.parent
-   
+
     },
     add_created_folder(state, data) {
 
@@ -39,20 +39,30 @@ export default new Vuex.Store({
       state.renaming = data
 
     },
+
     select_icons(state, data) {
 
       state.selected_icons = data
-      state.renaming=null
+      state.renaming = null
 
     },
     unselect_all_icons(state) {
 
       state.selected_icons = []
       state.selected_icons
-      state.renaming=null
+      state.renaming = null
     },
   },
   actions: {
+    move_files(context, data) {
+      var array_of_folders={}
+      window.api.patch("/api/folders/move/", array_of_folders)
+        .catch(function (error) {
+          // on error revert the change
+          console.log(error)
+        });
+
+    },
     update_folder_data(context, folder_id) {
 
       window.api
@@ -68,17 +78,17 @@ export default new Vuex.Store({
         });
 
     },
-    complete_renaming(context,data) {
+    complete_renaming(context, data) {
       // temporary change the title to new title until request completes to make transition seamless
-      var old_title=data.item.title
-      data.item.title=data.title
-      window.api.patch(data.item.url , {"title": data.title}).then(response => data.item.title=response.data.title)
-      .catch(function (error) {
-        // on error revert the change
-        data.item.title=old_title
-        console.log(error)
-      });
-      
+      var old_title = data.item.title
+      data.item.title = data.title
+      window.api.patch(data.item.url, { "title": data.title }).then(response => data.item.title = response.data.title)
+        .catch(function (error) {
+          // on error revert the change
+          data.item.title = old_title
+          console.log(error)
+        });
+
     },
     go_up() {
       console.log('going up')
@@ -116,5 +126,6 @@ export default new Vuex.Store({
     },
     is_getting_renamed: state => {
       return state.renaming
-  }}
+    }
+  }
 })

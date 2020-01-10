@@ -1,7 +1,14 @@
 <template>
   <div
-    @mousedown.stop="iconSelected()"
-    @dblclick.stop="double_clicked_icon()"
+    @dragstart="drag_it"
+    @dragover="drag_over"
+    @dragend="drag_end"
+    @drop="dropped"
+    draggable="true"
+    @mousedown.stop="iconSelected"
+    @mouseup.stop="mouse_up"
+
+    @dblclick.stop="double_clicked_icon"
     @mouseover="hover = true"
     @mouseleave="hover = false"
     class="icon absolute-center"
@@ -11,7 +18,14 @@
       <div class="mimetype">{{item.type}}</div>
       <font-awesome-icon :icon="icon" size="5x" />
     </div>
-    <input v-if="is_getting_renamed" class="icon-title" @mousedown.stop ref="input" v-model="title" />
+    <input
+      v-if="is_getting_renamed"
+      class="icon-title"
+      @mousedown.stop
+      ref="input"
+      v-model="title"
+      v-on:submit.prevent="stop_renaming"
+    />
     <div v-else class="icon-title" v-text="item.title"></div>
     <div class="modified">Modified:{{item.modification_date | moment("YYYY-MM-DD") }}</div>
   </div>
@@ -29,6 +43,7 @@ export default {
         return "";
       }
     },
+
     is_getting_renamed: function() {
       if (this.$store.getters.is_getting_renamed == this.item) {
         this.$nextTick(function() {
@@ -43,16 +58,64 @@ export default {
   watch: {
     // whenever question changes, this function will run
     is_getting_renamed: function(newis_getting_renamed, oldis_getting_renamed) {
-  
-  if (oldis_getting_renamed==true) {
-
-
-  this.$store.dispatch("complete_renaming", {item:this.item, title:this.title});
-    }}
+      if (oldis_getting_renamed == true) {
+        this.$store.dispatch("complete_renaming", {
+          item: this.item,
+          title: this.title
+        });
+      }
+    }
   },
   methods: {
-    iconSelected() {
-      this.$store.commit("select_icons", [this.item]);
+    stop_renaming() {
+      this.$store.commit("start_renaming", null);
+    },
+    iconSelected(event) {
+      var selected = this.$store.getters.get_selected_icons;
+      if (event.which === 3 && selected.includes(this.item)) {
+        // if right click and clicked item is already selected send it first in selection array
+        var combined = [];
+        [this.item].concat(selected).forEach(item => {
+          if (combined.indexOf(item) == -1) combined.push(item);
+        });
+        this.$store.commit("select_icons", combined);
+        console.log(combined);
+      } else {
+        if(selected.length > 1 && selected.includes(this.item)) {
+          // block left click to allow multiple items to be dragged
+        } else {
+        this.$store.commit("select_icons", [this.item]);
+        
+      }
+   
+      }
+     
+    },
+    mouse_up() {
+   
+      if(event.which === 1 && this.$store.getters.get_selected_icons.length > 1 && this.$store.getters.get_selected_icons.includes(this.item)) {
+          this.$store.commit("select_icons", [this.item]);
+
+    }},
+    drag_it(event) {
+      event.dataTransfer.setData("text/plain", "");
+      event.dataTransfer.effectAllowed = "move";
+    },
+    drag_over() {
+      if (this.item.type=="folder" && !this.$store.getters.get_selected_icons.includes(this.item)) {
+      document.documentElement.style.cursor = "-webkit-grabbing";
+      event.preventDefault();
+      console.log("over");
+      }
+    },
+    drag_end() {
+      document.documentElement.style.cursor = "default";
+    },
+    dropped() {
+      this.$store.dispatch("move_files", {
+          folder_array: this.$store.getters.get_selected_icons,
+          new_parent: this.item.pk
+        });
     }
   },
   data: function() {
@@ -124,5 +187,21 @@ export default {
   padding: 2px;
   min-width: 30px;
   border-radius: 5px;
+}
+
+#icon:hover {
+  cursor: -webkit-grab;
+}
+
+#icon:active {
+  cursor: -webkit-grabbing;
+}
+
+#Dropzone {
+  float: left;
+  width: 300px;
+  height: 100px;
+  border: 1px solid;
+  margin-bottom: 50px;
 }
 </style>

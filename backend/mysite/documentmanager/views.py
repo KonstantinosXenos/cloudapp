@@ -11,7 +11,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-
+from rest_framework.decorators import action
 
 class FileUploadView(rest_framework.views.APIView):
     parser_classes = (rest_framework.parsers.FileUploadParser, )
@@ -53,16 +53,6 @@ class FileFieldView(FormView):
             return self.form_invalid(form)
 
 
-def explorer(request):
-
-    serialized_obj = serialize('json', models.Folder.objects.all())
-
-    return render(request, 'documentmanager/index.html', {"objects": serialized_obj})
-
-
-def view_document(request):
-
-    return render(request, 'documentmanager/view.html', {"file":models.File.objects.get(pk=17)})
 
 
 class CommentViewSet(rest_framework.viewsets.ModelViewSet):
@@ -83,6 +73,10 @@ class ItemViewSet(rest_framework.viewsets.ModelViewSet):
         serializer.save(creator=self.request.user,modification_user=self.request.user)
     # def get_serializer_context(self):
     #     return {'request': None}
+    @action(methods=['patch'], detail=False)
+    def move(self, request, pk=None):
+        return Response(request.data)
+
 class FileViewSet(ItemViewSet):
     queryset = models.File.objects.all().order_by("modification_date")
     serializer_class = serializers.FileSerializer
@@ -100,26 +94,6 @@ class FileUploadViewSet(rest_framework.viewsets.ModelViewSet):
     """
     serializer_class = serializers.FileVersionSerializer
     queryset = models.FileVersion.objects.all().order_by("uploadtime")
-    def perform_create(self, serializer):
-        serializer.save(creator=self.request.user)
-
-    # def get_serializer_class(self):
-    #     serializer_class = self.serializer_class
-    #     if self.request.method == 'POST':
-    #         serializer_class = serializers.FileUploadSerializer
-    #     return serializer_class
-    # def perform_create(self, serializer):
-    #
-    #     serializer.save(creator=self.request.user)
-    # def list(self, request, *args, **kwargs):
-    #     return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
-
-    # def create(self, request):
-    #     # models.File()
-    #
-    #     version=models.FileVersion(fileuploaded=request.FILES['file'],original_filename=request.FILES['file'].name).save()
-    #     file=models.File(current_version=version).save()
-    #     return Response({"file_id":file.pk},status.HTTP_201_CREATED)
 
 
 
