@@ -10,3 +10,5 @@ celery
 elasticsearch-dsl
 django-elasticsearch-dsl
 django-elasticsearch-dsl-drf
+djangorestframework-bulk
+django-model-utils

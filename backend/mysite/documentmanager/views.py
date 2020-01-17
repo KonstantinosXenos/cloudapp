@@ -3,7 +3,7 @@ from .forms import FileFieldForm
 from django.core.files.storage import default_storage
 from django.urls import reverse_lazy
 from django.shortcuts import render, redirect, get_object_or_404
-from . import models,serializers
+from . import models, serializers
 from django.core.serializers import serialize
 import rest_framework
 from rest_framework import generics
@@ -13,45 +13,21 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from rest_framework.decorators import action
 
-class FileUploadView(rest_framework.views.APIView):
-    parser_classes = (rest_framework.parsers.FileUploadParser, )
 
-    def post(self, request):
-        up_file = request.FILES['file']
-        destination = open('/protected/' + up_file.name, 'wb+')
-        for chunk in up_file.chunks():
-            destination.write(chunk)
-            destination.close()
+# class FileUploadView(rest_framework.views.APIView):
+#     parser_classes = (rest_framework.parsers.FileUploadParser, )
 
-        # ...
-        # do some stuff with uploaded file
-        # ...
-        return Response(up_file.name, status.HTTP_201_CREATED)
+#     def post(self, request):
+#         up_file = request.FILES['file']
+#         destination = open('/protected/' + up_file.name, 'wb+')
+#         for chunk in up_file.chunks():
+#             destination.write(chunk)
+#             destination.close()
 
-
-class FileFieldView(FormView):
-    form_class = FileFieldForm
-
-    template_name = 'documentmanager/upload.html'  # Replace with your template.
-    success_url = reverse_lazy('documentmanager:upload')  # Replace with your URL or reverse().
-
-    def post(self, request, *args, **kwargs):
-        form_class = self.get_form_class()
-        form = self.get_form(form_class)
-
-
-        if form.is_valid():
-            for filename, file in request.FILES.items():
-                name = request.FILES[filename].name
-
-
-            instance=form.save(commit=False)
-            instance.original_filename = name
-            instance.save()
-            return self.form_valid(form)
-        else:
-            return self.form_invalid(form)
-
+#         # ...
+#         # do some stuff with uploaded file
+#         # ...
+#         return Response(up_file.name, status.HTTP_201_CREATED)
 
 
 
@@ -59,43 +35,62 @@ class CommentViewSet(rest_framework.viewsets.ModelViewSet):
     queryset = models.Comment.objects.all().order_by("date")
     serializer_class = serializers.CommentSerializer
 
+
 class ItemViewSet(rest_framework.viewsets.ModelViewSet):
     """
     Base ViewSet for all Files
     """
-    serializer_class = serializers.FolderSerializer
-    queryset = models.Folder.objects.all().order_by("modification_date")
+    serializer_class = serializers.ItemSerializer
+    queryset = models.Item.objects.all().order_by("modification_date")
+    
     def perform_update(self, serializer):
         serializer.save(modification_user=self.request.user)
 
     def perform_create(self, serializer):
 
-        serializer.save(creator=self.request.user,modification_user=self.request.user)
+        return serializer.save(creator=self.request.user)
     # def get_serializer_context(self):
     #     return {'request': None}
     @action(methods=['patch'], detail=False)
-    def move(self, request, pk=None):
+    def move(self, request):
+       
+        serializer = self.get_serializer(self.queryset, data=request.data, many=True, partial=True)
+        if serializer.is_valid():
+
+            instances=self.perform_create(serializer)
+
+
+            pk_list=[instance.pk for instance in instances]
+
+            #subclass the item and return the subclassed serializer
+            subclassed_data=[item.get_serializer()(item,context={'request': request}).data for item in models.Item.objects.filter(pk__in=pk_list).select_subclasses()]
+            return Response(subclassed_data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(methods=['delete'], detail=False)
+    def delete(self, request):
+        self.queryset.filter(pk__in=[d['pk'] for d in request.data]).delete()
         return Response(request.data)
 
 class FileViewSet(ItemViewSet):
     queryset = models.File.objects.all().order_by("modification_date")
     serializer_class = serializers.FileSerializer
 
+    @action(methods=['post'], detail=False)
+    def upload(self, request):
+        serializer=serializers.FileVersionSerializer(context={'request': request},data=request.data)
+        if serializer.is_valid():
+
+            
+            instance=self.perform_create(serializer)
+            
+            return Response(self.get_serializer(self.queryset.get(pk=instance.file)).data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class FolderViewSet(ItemViewSet):
 
     serializer_class = serializers.FolderSerializerWithContents
     queryset = models.Folder.objects.all().order_by("modification_date")
-
-class FileUploadViewSet(rest_framework.viewsets.ModelViewSet):
-
-    """
-    File Versions and File Upload
-    """
-    serializer_class = serializers.FileVersionSerializer
-    queryset = models.FileVersion.objects.all().order_by("uploadtime")
-
-
 
 
 

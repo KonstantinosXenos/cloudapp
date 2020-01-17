@@ -13,7 +13,9 @@
         </div>
       </div>
       <upbutton class="toolbar-button toolbar-item"></upbutton>
+      <refreshbutton class="toolbar-button toolbar-item"></refreshbutton>
       <uploadbutton class="toolbar-button toolbar-item" @clickedfile="open_file_input()"></uploadbutton>
+
       <label>
         File
         <input
@@ -23,6 +25,7 @@
           style="display: none"
           v-on:change="handleFileUpload()"
           accept=".pdf"
+          multiple
         />
       </label>
       <input class="toolbar-item" type="text" placeholder="Search.." id="searchbar" />
@@ -34,9 +37,10 @@
 <script>
 import upbutton from "./components/upbutton.vue";
 import uploadbutton from "./components/uploadbutton.vue";
+import refreshbutton from "./components/refreshbutton.vue";
 export default {
   name: "toolbar",
-  components: { upbutton, uploadbutton },
+  components: { upbutton, uploadbutton, refreshbutton },
   methods: {
     clicked: function(pk) {
       this.$router.push({ name: "explorer", params: { id: pk } });
@@ -46,25 +50,24 @@ export default {
     },
 
     handleFileUpload() {
-      console.log(this.$refs.file.files[0]);
-      var file_for_upload=this.$refs.file.files[0]
-      let formData = new FormData();
-      formData.append("fileuploaded", file_for_upload);
-      formData.append("folder", this.$store.getters.current_folder_id);
-      formData.append("original_filename", file_for_upload.name);
-      formData.append("file", "");
-      window.api
-        .post("/api/fileupload/", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data"
-          }
-        })
-        .then(function() {
-          console.log("SUCCESS!!");
-        })
-        .catch(function() {
-          console.log("FAILURE!!");
-        });
+      this.$refs.file.files.forEach(file_for_upload => {
+        var formData = new FormData();
+
+        formData.append("fileuploaded", file_for_upload);
+        formData.append("folder", this.$store.getters.current_folder_id);
+        formData.append("original_filename", file_for_upload.name);
+        formData.append("file", "");
+        window.api
+          .post("/api/file/upload/", formData, {
+            headers: {
+              "Content-Type": "multipart/form-data"
+            }
+          })
+          .then(response => 
+            this.$store.dispatch('add_files',[response.data])
+          )
+          
+      });
     }
   }
 };

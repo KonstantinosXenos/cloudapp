@@ -30,7 +30,8 @@ SECRET_KEY = env.str('SECRET_KEY')
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
-
+USE_X_FORWARDED_HOST=True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 LOGIN_URL='authentication/login'
 # Application definition
 APPEND_SLASH=True

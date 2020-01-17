@@ -7,14 +7,14 @@
     draggable="true"
     @mousedown.stop="iconSelected"
     @mouseup.stop="mouse_up"
-
     @dblclick.stop="double_clicked_icon"
     @mouseover="hover = true"
     @mouseleave="hover = false"
+    @contextmenu.stop="clickedrightbutton"
     class="icon absolute-center"
     :class="[{hovered: hover},is_selected]"
   >
-    <div class="icon-image absolute-center">
+    <div class="icon-image absolute-center" :class="[is_cut]">
       <div class="mimetype">{{item.type}}</div>
       <font-awesome-icon :icon="icon" size="5x" />
     </div>
@@ -28,12 +28,24 @@
     />
     <div v-else class="icon-title" v-text="item.title"></div>
     <div class="modified">Modified:{{item.modification_date | moment("YYYY-MM-DD") }}</div>
+    <rightclickmenu
+       @mouseup.native.stop
+       @mousedown.native.stop
+
+      ref="rightclickmenu"
+      :menu_options="menu_options_data"
+      @optionclicked="optionClicked"
+    ></rightclickmenu>
   </div>
 </template>
 
 <script>
+import rightclickmenu from "@/components/explorer/components/icon_panel/components/rightclickmenu.vue";
 export default {
   name: "icon",
+  components: {
+    rightclickmenu
+  },
   props: ["item"],
   computed: {
     is_selected: function() {
@@ -43,7 +55,13 @@ export default {
         return "";
       }
     },
-
+    is_cut: function() {
+      if (this.$store.getters.get_cut_icons.includes(this.item)) {
+        return "cut";
+      } else {
+        return "";
+      }
+    },
     is_getting_renamed: function() {
       if (this.$store.getters.is_getting_renamed == this.item) {
         this.$nextTick(function() {
@@ -67,6 +85,9 @@ export default {
     }
   },
   methods: {
+    cut() {
+      this.$store.dispatch("cut");
+    },
     stop_renaming() {
       this.$store.commit("start_renaming", null);
     },
@@ -79,33 +100,36 @@ export default {
           if (combined.indexOf(item) == -1) combined.push(item);
         });
         this.$store.commit("select_icons", combined);
-        console.log(combined);
+       
       } else {
-        if(selected.length > 1 && selected.includes(this.item)) {
+        if (selected.length > 1 && selected.includes(this.item)) {
           // block left click to allow multiple items to be dragged
         } else {
-        this.$store.commit("select_icons", [this.item]);
-        
+          this.$store.commit("select_icons", [this.item]);
+        }
       }
-   
-      }
-     
     },
     mouse_up() {
-   
-      if(event.which === 1 && this.$store.getters.get_selected_icons.length > 1 && this.$store.getters.get_selected_icons.includes(this.item)) {
-          this.$store.commit("select_icons", [this.item]);
-
-    }},
+      if (
+        event.which === 1 &&
+        this.$store.getters.get_selected_icons.length > 1 &&
+        this.$store.getters.get_selected_icons.includes(this.item)
+      ) {
+        this.$store.commit("select_icons", [this.item]);
+      }
+    },
     drag_it(event) {
       event.dataTransfer.setData("text/plain", "");
       event.dataTransfer.effectAllowed = "move";
     },
     drag_over() {
-      if (this.item.type=="folder" && !this.$store.getters.get_selected_icons.includes(this.item)) {
-      document.documentElement.style.cursor = "-webkit-grabbing";
-      event.preventDefault();
-      console.log("over");
+      if (
+        this.item.type == "folder" &&
+        !this.$store.getters.get_selected_icons.includes(this.item)
+      ) {
+        document.documentElement.style.cursor = "-webkit-grabbing";
+        event.preventDefault();
+        console.log("over");
       }
     },
     drag_end() {
@@ -113,15 +137,33 @@ export default {
     },
     dropped() {
       this.$store.dispatch("move_files", {
-          folder_array: this.$store.getters.get_selected_icons,
-          new_parent: this.item.pk
-        });
+        folder_array: this.$store.getters.get_selected_icons,
+        new_parent: this.item.pk
+      });
+    },
+    clickedrightbutton(event) {
+      this.$refs.rightclickmenu.openMenu(event);
+    },
+
+    optionClicked(event) {
+      this[event]();
+    },
+    rename() {
+      this.$store.commit("start_renaming", this.item);
+    },
+    delete() {
+      this.$store.dispatch("delete_selected_items");
     }
   },
   data: function() {
     return {
       hover: false,
-      title: this.item.title
+      title: this.item.title,
+      menu_options_data: [
+        { name: "Rename", func: "rename" },
+        { name: "Cut", func: "cut" },
+        { name: "Delete", func: "delete" }
+      ]
     };
   }
 };
@@ -203,5 +245,9 @@ export default {
   height: 100px;
   border: 1px solid;
   margin-bottom: 50px;
+}
+.cut {
+
+  opacity: 0.5;
 }
 </style>

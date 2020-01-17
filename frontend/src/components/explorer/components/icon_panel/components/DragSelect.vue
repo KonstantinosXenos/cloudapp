@@ -3,7 +3,7 @@
 <template>
   <div class="vue-drag-select" @mousedown="onMouseDown">
     <slot :selectedItems="selectedItems" />
-    <div v-if="mouseDown" class="vue-drag-select-box" :style="selectionBoxStyling"></div>
+    <div v-if="mouseDown && endPoint" class="vue-drag-select-box" :style="selectionBoxStyling"></div>
   </div>
 </template>
 
@@ -59,6 +59,8 @@ export default {
   computed: {
     selectionBox() {
       // Only set styling when necessary
+
+      
       if (!this.mouseDown || !this.startPoint || !this.endPoint) return {};
       const clientRect = this.$el.getBoundingClientRect();
       const scroll = this.getScroll();
@@ -112,12 +114,11 @@ export default {
     }
   },
   watch: {
-    selectedItems(val, old) {
+    selectedItems(val) {
       let result = val.map(it => it.item);
-      console.log(val, old);
+
       this.$store.commit("select_icons", result);
 
-      // this.$emit('change', val)
     }
   },
   methods: {

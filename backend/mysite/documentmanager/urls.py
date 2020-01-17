@@ -12,7 +12,6 @@ router.register(r'item', views.ItemViewSet, basename='item')
 router.register(r'folders', views.FolderViewSet, basename='folder')
 router.register(r'comments', views.CommentViewSet)
 router.register(r'file', views.FileViewSet, basename='file')
-router.register(r'fileupload', views.FileUploadViewSet, basename='upload')
 
 
 

@@ -46,7 +46,6 @@ services:
 
     depends_on:
       - djangoapp
-      - elasticsearch
     networks:
       - nginx_network
 
@@ -60,10 +59,10 @@ services:
     volumes:
       - database_volume:/var/lib/postgresql/data
 
-  elasticsearch:
-    image: elasticsearch
-    volumes:
-      - elasticsearch_volume:/usr/share/elasticsearch/data
+  # elasticsearch:
+  #   image: elasticsearch
+  #   volumes:
+  #     - elasticsearch_volume:/usr/share/elasticsearch/data
 
 networks:
   nginx_network:

@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
 # Create your views here.
 def login_request(request):
+    
     if request.method == 'POST':
         form = AuthenticationForm(request=request, data=request.POST)
         if form.is_valid():

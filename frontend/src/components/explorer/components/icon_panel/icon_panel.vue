@@ -4,7 +4,7 @@
     <drag-select-container
       class="icon-container"
       @mousedown.native.self.stop="unselectAll()"
-      @contextmenu.native.stop="clickedrightbutton($event, 'panel')"
+      @contextmenu.native.self.stop="clickedrightbutton"
       selectorClass="item" 
       @change="dragselect"
     >
@@ -13,7 +13,7 @@
       <rightclickmenu
         ref="rightclickmenu"
         :menu_options="menu_options_data"
-        @optionclicked="optionClicked($event)"
+        @optionclicked="optionClicked"
       ></rightclickmenu>
 
       <h3 v-if="empty_folder">This folder is empty.</h3>
@@ -26,7 +26,7 @@
         :item="item"
         ref="icon"
         :is="component_name(item.type)"
-        @contextmenu.native.stop="clickedrightbutton($event,item)"
+        
         class="item"
      
       ></component>
@@ -74,14 +74,8 @@ export default {
     },
 
     // menu functions
-    clickedrightbutton(event, component) {
-      if (component == "panel") {
-        this.menu_options_data = [
-          { name: "New Folder", func: "create_new_folder" }
-        ];
-      } else {
-        this.menu_options_data = [{ name: "Rename", func: "rename" }];
-      }
+    clickedrightbutton(event) {
+
       this.$refs.rightclickmenu.openMenu(event);
     },
     optionClicked(event) {
@@ -90,19 +84,25 @@ export default {
     },
 
     //menu option functions for panel
+    paste() {
+            this.$store.dispatch("paste", {
+        folder_array: this.$store.getters.get_cut_icons,
+        new_parent: this.$store.getters.current_folder_id
+      });
+    },
     create_new_folder() {
       this.$store.dispatch("create_folder");
     },
-    rename(item) {
-      console.log(item);
-      this.$store.commit("start_renaming", item);
-    }
+
   },
 
   data: function() {
     return {
 
-      menu_options_data: ["Delete", "Copy"],
+      menu_options_data: [
+          { name: "New Folder", func: "create_new_folder" },
+          { name: "Paste", func: "paste" }
+        ],
       selectedItems: []
       
     };
