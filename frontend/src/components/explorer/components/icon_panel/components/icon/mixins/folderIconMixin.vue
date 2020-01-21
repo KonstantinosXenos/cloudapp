@@ -1,10 +1,10 @@
 <script>
-
+import navigation from '@/components/explorer/interfaces/navigation.vue'
 export default {
-
+mixins:[navigation],
   methods: {
     double_clicked_icon() {
-      this.$router.push({ name: "explorer", params: { id: this.item.pk } });
+      this.change_folder(this.item.pk)
     },
   },
   

@@ -101,15 +101,15 @@ class GetFolderFullPath(generics.RetrieveAPIView):
     serializer_class = serializers.FolderPathSerializer
 
 
-# @login_required
-# def serve_protected_document(request, file):
-#     document = get_object_or_404(ProtectedDocument, file="protected/documents/" + file)
-#
-#     # Split the elements of the path
-#     path, file_name = os.path.split(file)
-#
-#     response = HttpResponse()
-#     response["Content-Disposition"] = "attachment; filename=" + file_name
-#     # nginx uses this path to serve the file
-#     response["X-Accel-Redirect"] = document.name # path to file
-#     return response
+@login_required
+def serve_protected(request, file):
+    document = get_object_or_404(ProtectedDocument, file="protected/documents/" + file)
+
+    # Split the elements of the path
+    path, file_name = os.path.split(file)
+
+    response = HttpResponse()
+    response["Content-Disposition"] = "attachment; filename=" + file_name
+    # nginx uses this path to serve the file
+    response["X-Accel-Redirect"] = document.name # path to file
+    return response

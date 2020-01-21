@@ -15,9 +15,10 @@ router.register(r'file', views.FileViewSet, basename='file')
 
 
 
+
 urlpatterns = [
     url(r'^api/', include(router.urls)),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-
+    path('/media/protected/<slug:file>', views.serve_protected, name='serve_protected')
 
 ]

@@ -16,6 +16,12 @@
   >
     <div class="icon-image absolute-center" :class="[is_cut]">
       <div class="mimetype">{{item.type}}</div>
+
+      <div v-if="number_of_comments>0 || hover || is_selected" class="chaticon">
+        <font-awesome-icon :icon="['far','comment']" size="lg" />
+        <div v-if="number_of_comments" class="numberofcomments">{{number_of_comments}}</div>
+      </div>
+
       <font-awesome-icon :icon="icon" size="5x" />
     </div>
     <input
@@ -29,9 +35,8 @@
     <div v-else class="icon-title" v-text="item.title"></div>
     <div class="modified">Modified:{{item.modification_date | moment("YYYY-MM-DD") }}</div>
     <rightclickmenu
-       @mouseup.native.stop
-       @mousedown.native.stop
-
+      @mouseup.native.stop
+      @mousedown.native.stop
       ref="rightclickmenu"
       :menu_options="menu_options_data"
       @optionclicked="optionClicked"
@@ -48,6 +53,9 @@ export default {
   },
   props: ["item"],
   computed: {
+    number_of_comments: function() {
+      return this.item.comment.length;
+    },
     is_selected: function() {
       if (this.$store.getters.get_selected_icons.includes(this.item)) {
         return "selected";
@@ -100,7 +108,6 @@ export default {
           if (combined.indexOf(item) == -1) combined.push(item);
         });
         this.$store.commit("select_icons", combined);
-       
       } else {
         if (selected.length > 1 && selected.includes(this.item)) {
           // block left click to allow multiple items to be dragged
@@ -230,7 +237,40 @@ export default {
   min-width: 30px;
   border-radius: 5px;
 }
-
+.chaticon {
+  background-color: Transparent;
+  background-repeat: no-repeat;
+  border: none;
+  cursor: pointer;
+  outline: none;
+  position: absolute;
+  top: 0%;
+  left: 80%;
+  z-index: 10;
+  padding: 2px;
+  min-width: 30px;
+  border-radius: 5px;
+}
+.numberofcomments {
+  position: absolute;
+  border-width: 1.5px;
+  border-radius: 50%;
+  border-style: solid;
+  border-color: black;
+  background: red;
+  font-size: 11px;
+  color: white;
+  top: 40%;
+  left: 50%;
+  z-index: 11;
+  padding: 0px;
+  margin: 0px;
+  width: 16px;
+  height: 16px;
+  font-weight: bold;
+  text-align: center;
+  line-height: 16px;
+}
 #icon:hover {
   cursor: -webkit-grab;
 }
@@ -247,7 +287,8 @@ export default {
   margin-bottom: 50px;
 }
 .cut {
-
   opacity: 0.5;
 }
+
+
 </style>

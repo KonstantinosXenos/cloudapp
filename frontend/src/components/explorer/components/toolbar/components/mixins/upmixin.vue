@@ -12,7 +12,7 @@ export default {
     click_event() {
     
       if (!this.is_disabled) {
-    
+            
             this.go_up()
 
       }

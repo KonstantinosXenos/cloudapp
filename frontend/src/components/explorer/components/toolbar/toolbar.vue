@@ -2,7 +2,6 @@
 <template>
   <div id="toolbar">
     <div class="rowparent">
-      <div id="projecttitle">AZTEC Docs</div>
       <div id="pathbar" class="toolbar-item">
         <i class="las la-folder fa-rotate-270" style="color: black; margin-right: 1px; "></i>
         <div class="sidetoside" v-for="i in this.$store.getters.folder_path" v-bind:key="i.pk">
@@ -38,12 +37,14 @@
 import upbutton from "./components/upbutton.vue";
 import uploadbutton from "./components/uploadbutton.vue";
 import refreshbutton from "./components/refreshbutton.vue";
+import navigation from "@/components/explorer/interfaces/navigation.vue"
 export default {
   name: "toolbar",
   components: { upbutton, uploadbutton, refreshbutton },
+  mixins: [navigation],
   methods: {
     clicked: function(pk) {
-      this.$router.push({ name: "explorer", params: { id: pk } });
+      this.change_folder(pk);
     },
     open_file_input() {
       this.$refs.file.click();
@@ -109,6 +110,7 @@ export default {
   display: flex;
 }
 #pathbar {
+  margin-left: 20px;
   padding-left: 20px;
   height: 30px;
   width: 500px;

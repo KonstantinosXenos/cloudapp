@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import explorer from '../views/explorer.vue'
+import Desktop from '../views/Desktop.vue'
 
 Vue.use(VueRouter)
 
@@ -11,6 +12,10 @@ const routes = [
     path: '/explorer/:id',
     name: 'explorer',
     component: explorer
+  },  {
+    path: '/desktop/',
+    name: 'Desktop',
+    component: Desktop
   },
   {
     path: '/about',

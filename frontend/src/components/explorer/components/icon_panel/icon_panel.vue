@@ -5,34 +5,29 @@
       class="icon-container"
       @mousedown.native.self.stop="unselectAll()"
       @contextmenu.native.self.stop="clickedrightbutton"
-      selectorClass="item" 
+      selectorClass="item"
       @change="dragselect"
     >
-        <template>
-      <!-- Your items here -->
-      <rightclickmenu
-        ref="rightclickmenu"
-        :menu_options="menu_options_data"
-        @optionclicked="optionClicked"
-      ></rightclickmenu>
+      <template>
+        <!-- Your items here -->
+        <rightclickmenu
+          ref="rightclickmenu"
+          :menu_options="menu_options_data"
+          @optionclicked="optionClicked"
+        ></rightclickmenu>
 
-      <h3 v-if="empty_folder">This folder is empty.</h3>
-   
+        <h3 v-if="empty_folder">This folder is empty.</h3>
 
-
-      <component
-        v-for="item in this.$store.getters.icons"
-        v-bind:key="item.pk"
-        :item="item"
-        ref="icon"
-        :is="component_name(item.type)"
-        
-        class="item"
-     
-      ></component>
-          </template>
-  </drag-select-container>
-  
+        <component
+          v-for="item in this.$store.getters.icons"
+          v-bind:key="item.pk"
+          :item="item"
+          ref="icon"
+          :is="component_name(item.type)"
+          class="item"
+        ></component>
+      </template>
+    </drag-select-container>
   </div>
 </template>
 
@@ -40,7 +35,7 @@
 import folderIcon from "./components/icon/folderIcon.vue";
 import fileIcon from "./components/icon/fileIcon.vue";
 import rightclickmenu from "./components/rightclickmenu.vue";
-import DragSelect from './components/DragSelect.vue'
+import DragSelect from "./components/DragSelect.vue";
 export default {
   name: "iconpanel",
   props: ["folder_data"],
@@ -48,7 +43,7 @@ export default {
     folderIcon,
     fileIcon,
     rightclickmenu,
-    'drag-select-container': DragSelect
+    "drag-select-container": DragSelect
   },
   computed: {
     empty_folder() {
@@ -67,7 +62,7 @@ export default {
       }
     },
     dragselect(items) {
-      return items
+      return items;
     },
     unselectAll() {
       this.$store.commit("unselect_all_icons");
@@ -75,7 +70,6 @@ export default {
 
     // menu functions
     clickedrightbutton(event) {
-
       this.$refs.rightclickmenu.openMenu(event);
     },
     optionClicked(event) {
@@ -85,50 +79,36 @@ export default {
 
     //menu option functions for panel
     paste() {
-            this.$store.dispatch("paste", {
+      this.$store.dispatch("paste", {
         folder_array: this.$store.getters.get_cut_icons,
         new_parent: this.$store.getters.current_folder_id
       });
     },
     create_new_folder() {
       this.$store.dispatch("create_folder");
-    },
-
+    }
   },
 
   data: function() {
     return {
-
       menu_options_data: [
-          { name: "New Folder", func: "create_new_folder" },
-          { name: "Paste", func: "paste" }
-        ],
+        { name: "New Folder", func: "create_new_folder" },
+        { name: "Paste", func: "paste" }
+      ],
       selectedItems: []
-      
     };
   }
 };
 </script>
 
 <style scoped>
-#icon-panel {
-  margin: 0px;
-  padding: 0px;
-  height: 100%;
-  max-height: 100%;
-}
 .icon-container {
-  height: 100%;
-  max-height: 100%;
-  width: 100%;
   display: flex; /* or inline-flex */
-
+  height: 100%;
   flex-wrap: wrap;
-
-  align-items: flex-start;
-  align-content: flex-start;
-
   overflow: auto;
+  align-items:flex-start;
+  align-content: flex-start;
 }
 h3 {
   width: 100%;

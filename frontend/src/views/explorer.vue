@@ -1,7 +1,7 @@
 <template>
   <div id="explorer" class="flex-container flex-column" style="align-items: stretch;">
-    <toolbar></toolbar>
-    <div class="flex-container flex-row" style="height: 100%">
+    <toolbar class="flex-row"></toolbar>
+    <div class="flex-container flex-row middle-container">
       <iconpanel
         style="width: 50%;"
         :folder_data="folder_data"
@@ -10,7 +10,7 @@
       ></iconpanel>
       <preview v-bind:selectedfiles="selectedfiles" style="margin-left: auto;width: 50%;"></preview>
     </div>
-    <div class="footer"></div>
+    <div class="footer flex-row"></div>
   </div>
 </template>
 <script>
@@ -40,8 +40,8 @@ export default {
   
   },
   mounted() {
-    this.$store.dispatch('update_folder_data',this.$route.params.id)
-    
+    // this.$store.dispatch('update_folder_data',this.$route.params.id)
+    this.$store.dispatch('update_folder_data',1)
   },
   data: function() {
     return {
@@ -65,21 +65,22 @@ export default {
 
 .flex-container {
   display: flex;
+  align-items: stretch;
 }
 
 .flex-row {
-  flex-direction: row;
+
 }
 
 .flex-column {
   flex-direction: column;
+  
 }
 
 
 #explorer {
-  max-height: 100vh;
-  height: 100vh;
-  
+display: flex;
+  align-items: stretch;
 }
 .fa-rotate-270 {
   -webkit-transform: rotate(270deg);
@@ -88,5 +89,8 @@ export default {
   -o-transform: rotate(270deg);
   transform: rotate(270deg);
 }
-
+.middle-container {
+height: 100%;
+overflow: hidden;
+}
 </style>
