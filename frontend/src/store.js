@@ -1,11 +1,8 @@
-import axios from 'axios'
 import Vue from 'vue'
 import Vuex from 'vuex'
 import router from './router'
 // import router from './router'
-window.api = axios.create({ baseURL: '', withCredentials: true, xsrfCookieName: "X-CSRFTOKEN" })
-window.api.defaults.xsrfCookieName = 'csrftoken'
-window.api.defaults.xsrfHeaderName = 'X-CSRFTOKEN'
+
 Vue.use(Vuex)
 
 function remove_files(context, data) {
@@ -22,8 +19,10 @@ function remove_files(context, data) {
 //     window.location.href = '/authentication/login/';
 
 // }
-
+import taskManager from '@/components/system/taskManager.js'
 export default new Vuex.Store({
+
+    modules: { taskManager },
     state: {
         folder_data: {},
         path: [],
@@ -79,6 +78,7 @@ export default new Vuex.Store({
         },
 
         cut(context) {
+
             context.commit('cut', context.getters.get_selected_icons)
         },
         paste(context) {

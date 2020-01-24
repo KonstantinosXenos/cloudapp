@@ -63,4 +63,13 @@ body {
      margin: 0px;
   padding: 0px;
 }
+.flex-column {
+  display: flex;
+  flex-direction: column;
+}
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 </style>

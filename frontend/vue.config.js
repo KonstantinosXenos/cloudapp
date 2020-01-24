@@ -1,6 +1,6 @@
 module.exports = {
-  publicPath: '/',
-  devServer: {
-    public: '0.0.0.0'
-  }
+    publicPath: '/',
+    devServer: {
+        public: '0.0.0.0'
+    }
 }

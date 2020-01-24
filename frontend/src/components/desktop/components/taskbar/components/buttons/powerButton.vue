@@ -1,15 +1,16 @@
 <script>
 import baseButton from './mixins/baseButton.vue'
+import powermixin from './mixins/powermixin.vue'
 export default {
  name: 'closeButton',
  
  data: function () {
 
      return {
-    icon: 'times'
+    icon: 'power-off'
     }
 
  },
- mixins: [baseButton],
+ mixins: [baseButton,powermixin],
 }
 </script>
