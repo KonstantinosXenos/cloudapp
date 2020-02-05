@@ -3,7 +3,7 @@ import toolbarbutton from './mixins/toolbarbutton.vue'
 import upmixin from './mixins/upmixin.vue'
 export default {
  name: 'upbutton',
- 
+ props:['store'],
  data: function () {
 
      return {

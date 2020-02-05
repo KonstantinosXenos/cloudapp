@@ -9,7 +9,7 @@ export default {
   methods: {
     click_event() {
     
-      this.$store.dispatch('update_folder_data', this.$store.getters.current_folder_id)
+      this.$store.dispatch(this.store+'update_folder_data', this.$store.getters[this.store+'current_folder_id'])
     }
   }
 };

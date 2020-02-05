@@ -2,27 +2,27 @@
 export default {
   name: "navigation",
   methods: {
-    go_up() {
+    go_up(store) {
       if (this.router_mode) {
         this.$router.push({
           name: "navigator",
           params: { id: this.$store.getters.parent_folder }
         });
       } else {
-        this.$store.dispatch(
+        this.$store.dispatch(store+
           "update_folder_data",
-          this.$store.getters.parent_folder
+          this.$store.getters[store+'parent_folder']
         );
       }
     },
-    change_folder(folderid) {
+    change_folder(folderid,store) {
       if (this.router_mode) {
         this.$router.push({
           name: "navigator",
           params: { id: folderid }
         });
       } else {
-        this.$store.dispatch("update_folder_data", folderid);
+        this.$store.dispatch(store+"update_folder_data", folderid);
       }
     }
   },

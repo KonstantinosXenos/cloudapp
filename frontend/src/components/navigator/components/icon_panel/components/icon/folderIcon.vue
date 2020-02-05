@@ -8,6 +8,7 @@ export default {
 
      return {
          icon:"folder-open"
+,         color: "rgb(255, 199, 8)"
     }
 
  },

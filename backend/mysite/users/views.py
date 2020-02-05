@@ -7,8 +7,9 @@ from django.middleware.csrf import get_token
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.conf import settings
-from rest_framework import permissions,status
-from .serializers import LoginSerializer
+from rest_framework import permissions,status,viewsets
+from .serializers import LoginSerializer,UserSerializer
+from django.contrib.auth.models import User
 class GetCsrfToken(APIView):
     """
     Generate a csrf token to be used in login page.
@@ -58,3 +59,16 @@ def login_request(request):
     return render(request = request,
                     template_name = "users/login.html",
                     context={"form":form})
+
+
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+    def get_object(self):
+        pk = self.kwargs.get('pk')
+
+        if pk == "current":
+            return self.request.user
+
+        return super(UserViewSet, self).get_object()

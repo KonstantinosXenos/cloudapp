@@ -1,9 +1,13 @@
 .vdr {
     touch-action: none;
+    position: relative;
 }
 
-.handle,
-.vdr {
+.maincontainer {
+    position: relative;
+}
+
+.handle {
     position: absolute;
     box-sizing: border-box;
 }
@@ -14,13 +18,11 @@
     background: #eee;
     border: 1px solid #333;
     opacity: 0;
-    z-index: 4;
 }
 
 .handle-tl {
     top: -10px;
     left: -10px;
-    z-index: 5;
     cursor: nw-resize
 }
 
@@ -30,13 +32,11 @@
     width: 100%;
     margin-left: -5px;
     cursor: n-resize;
-    z-index: 5;
 }
 
 .handle-tr {
     top: -10px;
     right: -10px;
-    z-index: 5;
     cursor: ne-resize
 }
 
@@ -47,6 +47,7 @@
 
 .handle-ml,
 .handle-mr {
+    top: 0;
     height: 100%;
 }
 
@@ -59,7 +60,6 @@
     bottom: -10px;
     left: -10px;
     cursor: sw-resize;
-    z-index: 5;
 }
 
 .handle-bm {

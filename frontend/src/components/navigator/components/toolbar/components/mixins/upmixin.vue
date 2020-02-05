@@ -5,7 +5,7 @@ export default {
   mixins: [navigation],
   computed: {
     is_disabled() {
-      return this.$store.getters.parent_folder == null;
+      return this.$store.getters[this.store+'parent_folder'] == null;
     }
   },
   methods: {
@@ -13,7 +13,7 @@ export default {
     
       if (!this.is_disabled) {
             
-            this.go_up()
+            this.go_up(this.store)
 
       }
     }

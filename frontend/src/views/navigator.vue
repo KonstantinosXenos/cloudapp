@@ -1,24 +1,27 @@
 <template>
   <div id="navigator" class="flex-container flex-column" style="align-items: stretch;">
-    <toolbar class="flex-row"></toolbar>
+    <toolbar :store='store' class="flex-row"></toolbar>
     <div class="flex-container flex-row middle-container">
       <iconpanel
         style="width: 50%;"
         @selecteditems="selecteditems"
         ref="icon_panel"
+        :store='store'
       ></iconpanel>
-      <preview style="margin-left: auto;width: 50%;"></preview>
+      <preview :store='store' style="margin-left: auto;width: 50%;"></preview>
     </div>
     <div class="footer flex-row"></div>
   </div>
 </template>
 <script>
+
 import toolbar from "@/components/navigator/components/toolbar/toolbar.vue";
 import preview from "@/components/navigator/components/preview";
 import iconpanel from "@/components/navigator/components/icon_panel/icon_panel.vue";
-
+import navigatorInstance from '@/components/navigator/modules/navigatorInstance.js'
 export default {
   name: "navigator",
+  props: ['data'],
   components: {
     toolbar,
     preview,
@@ -39,12 +42,16 @@ export default {
   
   },
   mounted() {
-    // this.$store.dispatch('update_folder_data',this.$route.params.id)
-    this.$store.dispatch('update_folder_data',1)
+    this.$store.registerModule(['taskManager','taskManagerModules',this.data.unique_name] , navigatorInstance)
+    this.store='taskManager/taskManagerModules/'+this.data.unique_name+'/'
+    this.$store.dispatch(this.store+'update_folder_data',1)
+  },
+  beforeDestroy() {
+    this.$store.unregisterModule(['taskManager','taskManagerModules',this.data.unique_name])
   },
   data: function() {
     return {
-
+      store: ''
     };
   }
 };

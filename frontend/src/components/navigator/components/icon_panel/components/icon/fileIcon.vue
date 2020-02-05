@@ -8,6 +8,7 @@ export default {
 
      return {
          icon:"file-pdf"
+         ,         color: "rgb(252, 3, 3)"
     }
 
  },

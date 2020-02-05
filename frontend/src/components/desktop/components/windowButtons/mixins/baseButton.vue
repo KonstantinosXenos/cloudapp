@@ -1,6 +1,6 @@
 <template>
-  <button id="baseButton" :disabled="is_disabled" @click="click_event">
-    <font-awesome-icon :icon="icon" :style="{ color: 'white' }" />
+  <button id="baseButton" :disabled="is_disabled" @click="click_event" @mousedown.prevent.stop>
+    <font-awesome-icon :icon="icon" />
     <!-- <font-awesome-icon :icon="['fas', 'fa-level-up-alt']" /> -->
   </button>
 </template>
@@ -15,12 +15,7 @@ is_disabled: function() {
 }
 
 },
-methods: {
-click_event() {
 
-}
-
-}
 };
 
 </script>
@@ -29,11 +24,15 @@ click_event() {
 #baseButton {
   border-radius: 50%;
   height: 20px;
-  width: 20px;
-  font-size: 14px;
+  width: 40px;
+  font-size: 16px;
   background-color: transparent;
   text-align: center;
   padding: 0;
   border: none;
+  color: white;
+}
+#baseButton:hover {
+  color: rgb(55, 135, 255);
 }
 </style>

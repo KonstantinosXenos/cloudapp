@@ -1,7 +1,7 @@
 // Original work by stephan281094 @ https://github.com/stephan281094/vue-drag-select
 
 <template>
-  <div class="vue-drag-select" @mousedown="onMouseDown">
+  <div class="vue-drag-select" @mousedown.self="onMouseDown">
     <slot :selectedItems="selectedItems" />
     <div v-if="mouseDown && endPoint" class="vue-drag-select-box" :style="selectionBoxStyling"></div>
   </div>
@@ -20,23 +20,29 @@
 //   }
 //   return newArray
 // }
+import _ from 'lodash';  
 function debounce(func, wait, immediate) {
-	var timeout;
-	return function() {
-		var context = this, args = arguments;
-		var later = function() {
-			timeout = null;
-			if (!immediate) func.apply(context, args);
-		};
-		var callNow = immediate && !timeout;
-		clearTimeout(timeout);
-		timeout = setTimeout(later, wait);
-		if (callNow) func.apply(context, args);
-	};
+  var timeout;
+  return function() {
+    var context = this,
+      args = arguments;
+    var later = function() {
+      timeout = null;
+      if (!immediate) func.apply(context, args);
+    };
+    var callNow = immediate && !timeout;
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+    if (callNow) func.apply(context, args);
+  };
 }
 export default {
   name: "vue-drag-select",
   props: {
+    store: {
+      type: String,
+      required: true
+    },
     selectorClass: {
       type: String,
       required: true
@@ -60,7 +66,6 @@ export default {
     selectionBox() {
       // Only set styling when necessary
 
-      
       if (!this.mouseDown || !this.startPoint || !this.endPoint) return {};
       const clientRect = this.$el.getBoundingClientRect();
       const scroll = this.getScroll();
@@ -69,7 +74,7 @@ export default {
         Math.min(this.startPoint.x, this.endPoint.x) -
         clientRect.left +
         scroll.x;
-     
+
       var top = 0;
       var height = 0;
       var scrollDifferenceSinceClick = scroll.y - this.scrollatstart.y;
@@ -90,7 +95,6 @@ export default {
         );
       }
       const width = Math.abs(this.startPoint.x - this.endPoint.x);
-
 
       // Return the styles to be applied
       return {
@@ -115,10 +119,13 @@ export default {
   },
   watch: {
     selectedItems(val) {
-      let result = val.map(it => it.item);
+      let items = val.map(it => it.item.pk);
+      var pklist_a = this.$store.getters[this.store + "get_selected_icons"]
 
-      this.$store.commit("select_icons", result);
 
+        if(!_.isEqual(_.sortBy(pklist_a), _.sortBy(items))){
+        this.$store.commit(this.store + "select_icons", items);}
+      
     }
   },
   methods: {
@@ -159,26 +166,31 @@ export default {
       if (this.mouseDown) {
         this.endPoint = {
           x: event.pageX,
-          y: event.pageY}
-          this.searchforselection()
-        
-      }},
-      searchforselection: debounce(function () {
-        if (this.mouseDown) {
-        const children = this.$children.length
-          ? this.$children
-          : this.$el.children;
-        if (children) {
-          const selected = Array.from(children).filter(item => {
-            return this.isItemSelected(item.$el || item);
-          });
-          // If shift was held during mousedown the new selection is added to the current. Otherwise the new selection
-          // will be selected
-          // this.selectedItems = this.concat ? uniqueArray(this.selectedItems.concat(selected)) : selected
-          this.selectedItems = selected.length ? selected : [];
-        }
+          y: event.pageY
+        };
+        this.searchforselection();
       }
-    },1,true),
+    },
+    searchforselection: debounce(
+      function() {
+        if (this.mouseDown) {
+          const children = this.$children.length
+            ? this.$children
+            : this.$el.children;
+          if (children) {
+            const selected = Array.from(children).filter(item => {
+              return this.isItemSelected(item.$el || item);
+            });
+            // If shift was held during mousedown the new selection is added to the current. Otherwise the new selection
+            // will be selected
+            // this.selectedItems = this.concat ? uniqueArray(this.selectedItems.concat(selected)) : selected
+            this.selectedItems = selected.length ? selected : [];
+          }
+        }
+      },
+      1,
+      true
+    ),
     onMouseUp() {
       // Clean up event listeners
       window.removeEventListener("mousemove", this.onMouseMove);

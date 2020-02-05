@@ -11,5 +11,10 @@ export default {
 
  },
  mixins: [baseButton],
+  methods: {
+click_event() {
+  this.$emit('minimize')
 }
+
+}}
 </script>

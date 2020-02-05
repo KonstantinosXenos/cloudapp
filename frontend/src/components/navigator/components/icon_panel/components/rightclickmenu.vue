@@ -5,17 +5,19 @@
     tabindex="-1"
     ref="right"
     v-if="viewMenu"
-    @contextmenu.prevent.stop
-    @mousedown.prevent
     @blur="closeMenu"
+    @mouseup.stop.prevent
     :style="{top:top, left:left}"
+
   >
     <li
       v-for="(option,index) in menu_options"
       :key="index"
       v-text="option.name"
+      
+      @mousedown.stop
       @click.stop="optionclicked(option.func)"
-      @mousedown.prevent
+     
     ></li>
   </ul>
 </template>

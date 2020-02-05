@@ -14,16 +14,26 @@
 <script>
 export default {
   name: 'preview',
-  props: [],
+  props: ['store'],
 
   computed: {
     // a computed getter
     fileurl: function() {
       // `this` points to the vm instance
       try {
-        return this.$store.getters.get_selected_icons.slice(-1)[0].current_version.fileuploaded;
+        var file= this.$store.getters[
+        "taskManager/taskManagerModules/navigator/folder_data"
+      ].filter(item => item.pk==this.$store.getters[this.store+'get_selected_icons'][0])
+  
+        if (file[0] && file[0].type==='file') {
+ 
+ 
+        return file[0].current_version.fileuploaded;}
+        else {
+          return false;
+        }
       } catch (err) {
-    
+        console.log(err)
         return false;
       }
     }

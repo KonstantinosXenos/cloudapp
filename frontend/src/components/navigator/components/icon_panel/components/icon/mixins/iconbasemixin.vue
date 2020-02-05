@@ -4,13 +4,13 @@
     @dragover="drag_over"
     @dragend="drag_end"
     @drop="dropped"
-    draggable="true"
-    @mousedown.stop="iconSelected"
-    @mouseup.stop="mouse_up"
-    @dblclick.stop="double_clicked_icon"
+    :draggable="!is_getting_renamed"
+    @dblclick="double_clicked_icon"
+    @mousedown="iconSelected"
+    @mouseup="mouse_up"
     @mouseover="hover = true"
     @mouseleave="hover = false"
-    @contextmenu.stop="clickedrightbutton"
+    @contextmenu="clickedrightbutton"
     class="icon absolute-center"
     :class="[{hovered: hover},is_selected]"
   >
@@ -18,28 +18,29 @@
       <div class="mimetype">{{item.type}}</div>
 
       <div v-if="number_of_comments>0 || hover || is_selected" class="chaticon">
-        <font-awesome-icon :icon="['far','comment']" size="lg" />
-        <div v-if="number_of_comments" class="numberofcomments">{{number_of_comments}}</div>
+        <font-awesome-icon :icon="['far','comment']"  size="lg" />
       </div>
+      <div v-if="number_of_comments" class="numberofcomments">{{number_of_comments}}</div>
 
-      <font-awesome-icon :icon="icon" size="5x" />
+      <font-awesome-icon :icon="icon" :style="{ color: color }" size="5x" />
     </div>
     <input
       v-if="is_getting_renamed"
       class="icon-title"
-      @mousedown.stop
       ref="input"
       v-model="title"
       v-on:submit.prevent="stop_renaming"
+      @drag.prevent.stop
+      @dragstart.prevent.stop
+      draggable="false"
     />
     <div v-else class="icon-title" v-text="item.title"></div>
     <div class="modified">Modified:{{item.modification_date | moment("YYYY-MM-DD") }}</div>
     <rightclickmenu
-      @mouseup.native.stop
-      @mousedown.native.stop
       ref="rightclickmenu"
       :menu_options="menu_options_data"
       @optionclicked="optionClicked"
+      :store="store"
     ></rightclickmenu>
   </div>
 </template>
@@ -51,27 +52,36 @@ export default {
   components: {
     rightclickmenu
   },
-  props: ["item"],
+  props: ["item", "store"],
   computed: {
     number_of_comments: function() {
+      // return 1;
       return this.item.comment.length;
     },
     is_selected: function() {
-      if (this.$store.getters.get_selected_icons.includes(this.item)) {
+      if (
+        this.$store.getters[this.store + "get_selected_icons"].includes(
+          this.item.pk
+        )
+      ) {
         return "selected";
       } else {
         return "";
       }
     },
     is_cut: function() {
-      if (this.$store.getters.get_cut_icons.includes(this.item)) {
+      if (
+        this.$store.getters[
+          "taskManager/taskManagerModules/navigator/get_cut_icons"
+        ].includes(this.item.pk)
+      ) {
         return "cut";
       } else {
         return "";
       }
     },
     is_getting_renamed: function() {
-      if (this.$store.getters.is_getting_renamed == this.item) {
+      if (this.$store.getters[this.store + "is_getting_renamed"] == this.item) {
         this.$nextTick(function() {
           this.$refs.input.select();
         });
@@ -85,7 +95,7 @@ export default {
     // whenever question changes, this function will run
     is_getting_renamed: function(newis_getting_renamed, oldis_getting_renamed) {
       if (oldis_getting_renamed == true) {
-        this.$store.dispatch("complete_renaming", {
+        this.$store.dispatch(this.store + "complete_renaming", {
           item: this.item,
           title: this.title
         });
@@ -94,57 +104,69 @@ export default {
   },
   methods: {
     cut() {
-      this.$store.dispatch("cut");
+      this.$store.dispatch(this.store + "cut");
     },
     stop_renaming() {
-      this.$store.commit("start_renaming", null);
+      this.$store.commit(this.store + "start_renaming", null);
     },
     iconSelected(event) {
-      var selected = this.$store.getters.get_selected_icons;
-      if (event.which === 3 && selected.includes(this.item)) {
+      console.log("Clicked on", this.item.pk);
+      var selected = this.$store.getters[this.store + "get_selected_icons"];
+      if (event.which === 3 && selected.includes(this.item.pk)) {
         // if right click and clicked item is already selected send it first in selection array
         var combined = [];
-        [this.item].concat(selected).forEach(item => {
-          if (combined.indexOf(item) == -1) combined.push(item);
+        [this.item.pk].concat(selected).forEach(pk => {
+          if (combined.indexOf(pk) == -1) combined.push(pk);
         });
-        this.$store.commit("select_icons", combined);
+        this.$store.commit(this.store + "select_icons", combined);
       } else {
-        if (selected.length > 1 && selected.includes(this.item)) {
+        if (selected.length > 1 && selected.includes(this.item.pk)) {
           // block left click to allow multiple items to be dragged
         } else {
-          this.$store.commit("select_icons", [this.item]);
+          this.$store.commit(this.store + "select_icons", [this.item.pk]);
+          console.log("Selected icon with pk ", this.item.pk);
         }
       }
     },
     mouse_up() {
       if (
         event.which === 1 &&
-        this.$store.getters.get_selected_icons.length > 1 &&
-        this.$store.getters.get_selected_icons.includes(this.item)
+        this.$store.getters[this.store + "get_selected_icons"].length > 1 &&
+        this.$store.getters[this.store + "get_selected_icons"].includes(
+          this.item.pk
+        )
       ) {
-        this.$store.commit("select_icons", [this.item]);
+        console.log("Mouse up selection after multiselect", this.item.pk);
+        this.$store.commit(this.store + "select_icons", [this.item.pk]);
       }
     },
     drag_it(event) {
-      event.dataTransfer.setData("text/plain", "");
+      this.$store.commit(
+          "taskManager/taskManagerModules/navigator/items_getting_dragged", this.$store.getters[this.store + "get_selected_icons"]
+      )
+      event.dataTransfer.setData(
+        "itemArray",
+        JSON.stringify(this.$store.getters[this.store + "get_selected_icons"]
+        )
+      );
       event.dataTransfer.effectAllowed = "move";
     },
     drag_over() {
+
       if (
-        this.item.type == "folder" &&
-        !this.$store.getters.get_selected_icons.includes(this.item)
+        this.item.type == "folder" && !this.$store.getters["taskManager/taskManagerModules/navigator/items_getting_dragged"].includes(this.item.pk)
       ) {
         document.documentElement.style.cursor = "-webkit-grabbing";
         event.preventDefault();
-        console.log("over");
       }
     },
     drag_end() {
       document.documentElement.style.cursor = "default";
     },
     dropped() {
-      this.$store.dispatch("move_files", {
-        folder_array: this.$store.getters.get_selected_icons,
+      var itemArray = this.$store.getters["taskManager/taskManagerModules/navigator/items_getting_dragged"]
+      this.$store.dispatch(this.store + "move_files", {
+        pk_array: itemArray,
         new_parent: this.item.pk
       });
     },
@@ -156,10 +178,10 @@ export default {
       this[event]();
     },
     rename() {
-      this.$store.commit("start_renaming", this.item);
+      this.$store.commit(this.store + "start_renaming", this.item);
     },
     delete() {
-      this.$store.dispatch("delete_selected_items");
+      this.$store.dispatch(this.store + "delete_selected_items");
     }
   },
   data: function() {
@@ -200,8 +222,8 @@ export default {
 }
 
 .icon {
-  padding: 20px;
-  margin: 10px;
+  padding: 5px;
+  margin: 5px;
   border-style: hidden;
   user-select: none;
   width: 100px;
@@ -237,16 +259,16 @@ export default {
   border-radius: 5px;
 }
 .chaticon {
+  position: absolute;
   background-color: Transparent;
   background-repeat: no-repeat;
   border: none;
   cursor: pointer;
   outline: none;
-  position: absolute;
-  top: 0%;
+
+  top: 10%;
   left: 80%;
-  z-index: 10;
-  padding: 2px;
+  padding: 0px;
   min-width: 30px;
   border-radius: 5px;
 }
@@ -259,9 +281,9 @@ export default {
   background: red;
   font-size: 11px;
   color: white;
-  top: 40%;
-  left: 50%;
-  z-index: 11;
+  top: 20%;
+  left: 93%;
+
   padding: 0px;
   margin: 0px;
   width: 16px;
@@ -288,6 +310,4 @@ export default {
 .cut {
   opacity: 0.5;
 }
-
-
 </style>

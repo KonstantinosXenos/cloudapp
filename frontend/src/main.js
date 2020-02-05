@@ -8,10 +8,10 @@ window.api.defaults.xsrfHeaderName = 'X-CSRFTOKEN'
     // FA ICONS
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faLevelUpAlt, faCloudUploadAlt, faFolderOpen, faFilePdf, faRedo, faTimes, faChevronUp, faChevronDown, faUserCircle, faPowerOff, faExpandArrowsAlt } from '@fortawesome/free-solid-svg-icons'
-import { faComment } from '@fortawesome/free-regular-svg-icons'
+import { faComment, faWindowRestore } from '@fortawesome/free-regular-svg-icons'
 
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-library.add(faLevelUpAlt, faCloudUploadAlt, faFolderOpen, faFilePdf, faRedo, faComment, faTimes, faChevronUp, faChevronDown, faUserCircle, faPowerOff, faExpandArrowsAlt)
+library.add(faLevelUpAlt, faCloudUploadAlt, faFolderOpen, faFilePdf, faRedo, faComment, faTimes, faChevronUp, faChevronDown, faUserCircle, faPowerOff, faExpandArrowsAlt, faWindowRestore)
 Vue.component('font-awesome-icon', FontAwesomeIcon)
     // #############################
 

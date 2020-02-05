@@ -17,3 +17,10 @@ class LoginSerializer(serializers.Serializer):
             raise serializers.ValidationError('User is disabled.')
 
         return {'user': user}
+
+
+class UserSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = ["pk","username","last_name","first_name"]

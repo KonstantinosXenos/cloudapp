@@ -72,4 +72,7 @@ body {
   align-items: center;
   justify-content: center;
 }
+* {
+  user-select: none;
+}
 </style>
