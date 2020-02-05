@@ -1,3 +1,4 @@
+#THIS PROJECT IS NOT READY FOR USE YET. WORK IN PROGRESS
 # AZTEC CLOUD
 
 AZTEC Cloud is a centralized document creation and storage ecosystem with strong focus on collaboration between team members.
